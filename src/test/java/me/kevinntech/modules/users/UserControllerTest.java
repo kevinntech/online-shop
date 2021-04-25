@@ -54,7 +54,8 @@ class UserControllerTest {
                 .contentType(MediaType.APPLICATION_JSON) // HTTP 요청 본문으로 JSON을 보낸다.
                 .content(jsonString)
                 .with(csrf()))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(unauthenticated()); // 로그인 테스트 코드 (로그인 X)
     }
 
     @DisplayName("회원 가입 처리 - 입력 값 정상")
@@ -71,11 +72,11 @@ class UserControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonString)
                 .with(csrf()))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(authenticated());  // 로그인 테스트 코드 (로그인 O)
 
         User user = userRepository.findByEmail("kevin@test.com");
         assertThat(user).isNotNull();
         assertThat(user.getPassword()).isNotEqualTo("12345678"); // 패스워드가 인코딩 되었는지 확인
     }
-
 }

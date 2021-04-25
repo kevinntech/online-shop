@@ -4,9 +4,14 @@ import lombok.RequiredArgsConstructor;
 import me.kevinntech.modules.users.domain.User;
 import me.kevinntech.modules.users.dto.UserSaveRequestDto;
 import me.kevinntech.modules.users.repository.UserRepository;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +33,16 @@ public class UserService{
         User newUser = userRepository.save(user); // userRepository로 user를 저장한다.
 
         newUser.completeSignUp();
+        login(user); // 로그인 처리 ★★★
+    }
+
+    public void login(User user) {
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+                user.getNickname(),
+                user.getPassword(),
+                List.of(new SimpleGrantedAuthority("ROLE_USER")));
+
+        SecurityContextHolder.getContext().setAuthentication(token);
     }
 
 }
