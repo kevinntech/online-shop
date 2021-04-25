@@ -2,6 +2,7 @@ package me.kevinntech.modules.users.service;
 
 import lombok.RequiredArgsConstructor;
 import me.kevinntech.modules.users.domain.User;
+import me.kevinntech.modules.users.dto.UserCustom;
 import me.kevinntech.modules.users.dto.UserSaveRequestDto;
 import me.kevinntech.modules.users.repository.UserRepository;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -38,7 +39,7 @@ public class UserService{
 
     public void login(User user) {
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                user.getNickname(),
+                new UserCustom(user),
                 user.getPassword(),
                 List.of(new SimpleGrantedAuthority("ROLE_USER")));
 
