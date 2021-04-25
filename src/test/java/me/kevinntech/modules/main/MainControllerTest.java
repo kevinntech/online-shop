@@ -23,8 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class MainControllerTest {
 
-    @Autowired
-    MockMvc mockMvc;
+    @Autowired MockMvc mockMvc;
     @Autowired UserService userService;
     @Autowired UserRepository userRepository;
 
@@ -32,8 +31,8 @@ class MainControllerTest {
     @BeforeEach
     void beforeEach(){
         UserSaveRequestDto requestDto = new UserSaveRequestDto();
-        requestDto.setNickname("kevin");
-        requestDto.setEmail("kevin@test.com");
+        requestDto.setNickname("admin");
+        requestDto.setEmail("admin@test.com");
         requestDto.setPassword("12345678");
 
         userService.saveNewUser(requestDto);
@@ -49,12 +48,12 @@ class MainControllerTest {
     @Test
     void login_with_email() throws Exception{
         mockMvc.perform(post("/login")
-                .param("username", "kevin@test.com")
+                .param("username", "admin@test.com")
                 .param("password", "12345678")
                 .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/"))
-                .andExpect(authenticated().withUsername("kevin"));
+                .andExpect(authenticated().withUsername("admin"));
         // kevin이라는 이름으로 인증 될 것이다.라고 예상한다.
         // 그 이유는 UserAccount의 생성자에서 username을 nickname으로 했기 때문이다.
     }
@@ -63,12 +62,12 @@ class MainControllerTest {
     @Test
     void login_with_nickname() throws Exception{
         mockMvc.perform(post("/login")
-                .param("username", "kevin")
+                .param("username", "admin")
                 .param("password", "12345678")
                 .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/"))
-                .andExpect(authenticated().withUsername("kevin"));
+                .andExpect(authenticated().withUsername("admin"));
     }
 
     @DisplayName("로그인 실패")

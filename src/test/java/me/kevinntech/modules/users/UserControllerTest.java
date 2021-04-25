@@ -79,4 +79,5 @@ class UserControllerTest {
         assertThat(user).isNotNull();
         assertThat(user.getPassword()).isNotEqualTo("12345678"); // 패스워드가 인코딩 되었는지 확인
     }
+
 }
