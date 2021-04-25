@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- 회원가입 스크립트 -->
+<script type="application/javascript" th:fragment="sign-up-script">
+  var main = {
+    init : function () {
+      var _this = this;
+
+      $('#btn-save').on('click', function () {
+        _this.save();
+      });
+
+    },
+    save : function () {
+      var data = {
+        nickname: $('#nickname').val(),
+        email: $('#email').val(),
+        password: $('#password').val()
+      };
+
+      $.ajax({
+        type: 'POST',
+        url: '/api/v1/users',
+        //dataType: 'json',
+        contentType:'application/json; charset=utf-8',
+        data: JSON.stringify(data)
+      }).done(function() {
+        alert('회원가입을 완료하였습니다.');
+        window.location.href = '/';
+      }).fail(function (error) {
+        alert('회원가입에 실패했습니다.');
+        window.location.href = '/users/sign-up';
+        //alert(JSON.stringify(error));
+      });
+    }
+  };
+
+  main.init();
+</script>
