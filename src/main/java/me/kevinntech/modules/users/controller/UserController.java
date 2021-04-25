@@ -1,4 +1,4 @@
-package me.kevinntech.modules.users;
+package me.kevinntech.modules.users.controller;
 
 import me.kevinntech.modules.users.dto.UserSaveRequestDto;
 import org.springframework.stereotype.Controller;

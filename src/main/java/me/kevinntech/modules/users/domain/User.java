@@ -1,4 +1,4 @@
-package me.kevinntech.modules.users;
+package me.kevinntech.modules.users.domain;
 
 import lombok.*;
 
@@ -9,14 +9,14 @@ import java.util.List;
 
 @Entity
 @Table(name = "users")
-@Getter @Builder
+@Getter
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class User {
 
-    @Id
-    @GeneratedValue
+    @Id @GeneratedValue
     @Column(name = "user_id")
     private Long id;
 
@@ -34,5 +34,9 @@ public class User {
 
     @Lob @Basic(fetch = FetchType.EAGER)
     private String profileImage;
+
+    public void completeSignUp() {
+        this.joinedAt = LocalDateTime.now();
+    }
 
 }

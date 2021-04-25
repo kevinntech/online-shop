@@ -2,7 +2,7 @@ package me.kevinntech.modules.users.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import me.kevinntech.modules.users.User;
+import me.kevinntech.modules.users.domain.User;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Email;
