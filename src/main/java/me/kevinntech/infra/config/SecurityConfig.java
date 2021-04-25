@@ -18,6 +18,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers("/", "/login", "/users/**", "/products/**", "/api/v1/**").permitAll()
                 // 나머지는 로그인을 해야 사용 할 수 있다.
                 .anyRequest().authenticated();
+
+        // 로그인, 로그아웃 관련 코드
+        http.formLogin()
+                .loginPage("/login").permitAll();
+
+        http.logout()
+                .logoutSuccessUrl("/");
     }
 
     // static 리소스는 스프링 시큐리티 필터를 적용하지 않도록 한다.
