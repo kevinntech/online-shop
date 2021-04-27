@@ -19,11 +19,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class ProductApiControllerTest {
 
-    @Autowired
-    MockMvc mockMvc;
-
-    @Autowired
-    ObjectMapper objectMapper;
+    @Autowired MockMvc mockMvc;
+    @Autowired ObjectMapper objectMapper;
 
     @Test
     @DisplayName("상품 등록 - 완료")
