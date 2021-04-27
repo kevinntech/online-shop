@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/layout/header :: header"></head>
+<body class="bg-light">
+    <div th:replace="fragments/layout/navigation :: main-nav"></div>
+    <div class="container">
+        <div class="row mt-5 justify-content-center">
+            <div class="col-2">
+                <div th:replace="fragments/layout/admin-menu :: admin-menu(currentMenu='product-list')"></div>
+            </div>
+            <div class="col-8 ml-5">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>상품코드</th>
+                                <th>상품명</th>
+                                <th>브랜드명</th>
+                                <th>가격</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="product : ${products}">
+                                <td id="id" th:text="${product.id}"></td>
+                                <td id="code" th:text="${product.code}"></td>
+                                <td id="name" th:text="${product.name}"></td>
+                                <td id="brand" th:text="${product.brand}"></td>
+                                <td id="price" th:text="${#numbers.formatInteger(product.price, 3, 'COMMA')}"></td>
+                                <td>
+                                    <a th:href="@{/products/{id}/edit (id=${product.id})}" class="btn btn-success my-1">수정</a>
+                                    <button type="submit" id="btn-delete" class="btn btn-danger">삭제</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap js -->
+    <script th:replace="fragments/script/main-script :: jquery-script"></script>
+    <script th:replace="fragments/script/main-script :: bootstrap-script"></script>
+    <!-- csrf 토큰을 추가 -->
+    <script th:replace="fragments/script/csrf-token-script :: ajax-csrf-header"></script>
+    <!-- 상품 스크립트 -->
+    <script th:replace="fragments/script/product-script :: product-script"></script>
+</body>
+</html>

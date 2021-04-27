@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -40,7 +41,9 @@ public class ProductApiController {
         }
 
         // 상품 등록 처리
-        productService.saveNewProduct(requestDto);
+        Long savedId = productService.saveNewProduct(requestDto);
+
+        System.out.println(savedId);
 
         return ResponseEntity.ok().build();
     }
@@ -49,8 +52,11 @@ public class ProductApiController {
     * 상품코드 중복 확인
     * */
     @PostMapping("/api/v1/products/validate")
-    public ResponseEntity validate(@Valid @RequestBody ProductSaveRequestDto requestDto, Errors errors){
-        if (errors.hasErrors()) {
+    public ResponseEntity validate(@RequestBody Map<String, Object> param){
+        String code = (String) param.get("code");
+        boolean isDuplicate = productService.isDuplicate(code);
+
+        if (isDuplicate) {
             return ResponseEntity.badRequest().build();
         }
 
