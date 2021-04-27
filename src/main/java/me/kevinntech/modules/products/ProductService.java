@@ -3,6 +3,7 @@ package me.kevinntech.modules.products;
 import lombok.RequiredArgsConstructor;
 import me.kevinntech.modules.products.dto.ProductListResponseDto;
 import me.kevinntech.modules.products.dto.ProductSaveRequestDto;
+import me.kevinntech.modules.products.dto.ProductUpdateRequestDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,4 +40,24 @@ public class ProductService {
         return false;
     }
 
+    /*
+    * 상품 단 건 조회 (For Update)
+    * */
+    public ProductUpdateRequestDto findOneById(Long productId) {
+        Product product = productRepository.findOneById(productId);
+
+        if(product == null)
+            return null;
+
+        ProductUpdateRequestDto requestDto = new ProductUpdateRequestDto();
+        requestDto.setId(product.getId());
+        requestDto.setCode(product.getCode());
+        requestDto.setName(product.getName());
+        requestDto.setBrand(product.getBrand());
+        requestDto.setPrice(product.getPrice());
+        requestDto.setDescription(product.getDescription());
+        requestDto.setProductImage(product.getProductImage());
+
+        return requestDto;
+    }
 }

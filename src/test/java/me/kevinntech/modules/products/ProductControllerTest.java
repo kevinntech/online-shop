@@ -20,6 +20,7 @@ public class ProductControllerTest {
 
     @Autowired MockMvc mockMvc;
     @Autowired ObjectMapper objectMapper;
+    @Autowired ProductFactory productFactory;
 
     @Test
     @WithUser("kevin") // 해당 애노테이션이 없다면 인증을 요구하기 때문에 200 OK가 아닌 Redirection 됨
@@ -39,6 +40,18 @@ public class ProductControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("products/list"))
                 .andExpect(model().attributeExists("products"));
+    }
+
+    @Test
+    @WithUser("kevin")
+    @DisplayName("상품 수정 폼 조회")
+    void updateProductForm() throws Exception {
+        Product product = productFactory.createProduct();
+
+        mockMvc.perform(get("/products/" + product.getId() + "/edit"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("products/edit"))
+                .andExpect(model().attributeExists("product"));
     }
 
 }
