@@ -27,7 +27,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 // 권한 확인 없이 접근 가능해야 함
-                .mvcMatchers("/", "/login", "/users/**", "/products/**").permitAll()
+                .mvcMatchers("/", "/login", "/users/**").permitAll()
                 .mvcMatchers("/api/v1/**").permitAll()
                 // 나머지는 로그인을 해야 사용 할 수 있다.
                 .anyRequest().authenticated();

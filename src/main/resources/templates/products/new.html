@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/layout/header :: header"></head>
+<body class="bg-light">
+    <div th:replace="fragments/layout/navigation :: main-nav"></div>
+    <div class="container">
+        <div class="row mt-5 justify-content-center">
+            <div class="col-2">
+                <div th:replace="fragments/layout/admin-menu :: admin-menu(currentMenu='product-new')"></div>
+            </div>
+            <div class="col-8 ml-5">
+                <div class="row">
+                    <div id="product-new-form" class="col-sm-6" th:object="${productSaveRequestDto}">
+                        <div class="form-group">
+                            <label for="code">상품코드</label>
+                            <div class="input-group mb-3">
+                                <input id="code" type="text" th:field="*{code}" class="form-control require-validation" placeholder="상품코드를 입력하세요.">
+                                <div class="input-group-append">
+                                    <button class="btn btn-success" type="button" id="btn-validation">중복 확인</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="name">상품명</label>
+                            <input id="name" type="text" th:field="*{name}" class="form-control require-validation" placeholder="상품명을 입력하세요." aria-describedby="bioHelp" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="brand">브랜드명</label>
+                            <input id="brand" type="text" th:field="*{brand}" class="form-control require-validation" placeholder="브랜드명을 입력하세요." aria-describedby="bioHelp" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="price">가격</label>
+                            <input id="price" type="text" th:field="*{price}" class="form-control" placeholder="가격을 입력하세요." aria-describedby="bioHelp" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="description">설명</label>
+                            <input id="description" type="text" th:field="*{description}" class="form-control" placeholder="설명을 입력하세요." aria-describedby="bioHelp" required>
+                        </div>
+                        <!-- IMAGE -->
+                        <div class="form-group">
+                            <input id="productImage" type="hidden" th:field="*{productImage}" class="form-control" />
+                        </div>
+
+                        <div class="form-group">
+                            <div class="card text-center">
+                                <div class="card-header">
+                                    상품 이미지
+                                </div>
+                                <div id="current-product-image" class="mt-3">
+                                    <img src="/images/default_image.png" width="280" height="180" th:if="${#strings.isEmpty(productSaveRequestDto.productImage)}">
+                                    <img th:if="${!#strings.isEmpty(productSaveRequestDto.productImage)}" class="rounded"
+                                         th:src="${productSaveRequestDto.productImage}"
+                                         width="125" height="125" alt="name"/>
+                                </div>
+                                <div id="new-product-image" class="mt-3"></div>
+                                <div class="card-body">
+                                    <div class="custom-file">
+                                        <input type="file" class="custom-file-input" id="product-image-file">
+                                        <label class="custom-file-label" for="product-image-file">상품 이미지 변경</label>
+                                    </div>
+                                    <div id="new-product-image-control" class="mt-3">
+                                        <button class="btn btn-outline-primary btn-block" id="cut-button">자르기</button>
+                                        <button class="btn btn-outline-success btn-block" id="confirm-button">확인</button>
+                                        <button class="btn btn-outline-warning btn-block" id="reset-button">취소</button>
+                                    </div>
+                                    <div id="cropped-new-product-image" class="mt-3"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-6" th:object="${productSaveRequestDto}">
+                        <button type="submit" id="btn-save" class="btn btn-primary btn-block" aria-describedby="submitHelp">등록하기</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap js -->
+    <script th:replace="fragments/script/main-script :: jquery-script"></script>
+    <script th:replace="fragments/script/main-script :: bootstrap-script"></script>
+    <!-- CROPPER-JS -->
+    <script th:replace="fragments/script/cropper-script :: cropper-min-js"></script>
+    <script th:replace="fragments/script/cropper-script :: jquery-cropper-js"></script>
+    <script th:replace="fragments/script/cropper-script :: cropper-script"></script>
+    <!-- csrf 토큰을 추가 -->
+    <script th:replace="fragments/script/csrf-token-script :: ajax-csrf-header"></script>
+    <!-- 상품 스크립트 -->
+    <script th:replace="fragments/script/product-script :: product-script"></script>
+    <!-- 폼 검증 -->
+    <script th:replace="fragments/script/form-validation :: form-validation"></script>
+</body>
+</html>

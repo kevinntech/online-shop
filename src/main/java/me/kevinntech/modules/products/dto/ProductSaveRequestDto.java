@@ -2,7 +2,7 @@ package me.kevinntech.modules.products.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import me.kevinntech.onlineshop.modules.products.Product;
+import me.kevinntech.modules.products.Product;
 
 import javax.validation.constraints.Min;
 
