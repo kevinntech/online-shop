@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -85,4 +86,15 @@ public class ProductService {
 
         return findProduct;
     }
+
+    public Product findById(Long productId) {
+        Optional<Product> byId = productRepository.findById(productId);
+
+        if(byId.isPresent())
+            return byId.get();
+        else
+            return null;
+
+    }
+
 }
