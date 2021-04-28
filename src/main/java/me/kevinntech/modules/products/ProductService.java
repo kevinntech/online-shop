@@ -60,4 +60,13 @@ public class ProductService {
 
         return requestDto;
     }
+
+    // 변경 감지 기능을 사용해서 수정하기
+    @Transactional
+    public void updateProduct(Long productId, ProductUpdateRequestDto requestDto) {
+        Product findProduct = productRepository.findOneById(productId);
+
+        findProduct.update(requestDto);
+    }
+
 }

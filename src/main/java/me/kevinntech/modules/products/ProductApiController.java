@@ -2,14 +2,12 @@ package me.kevinntech.modules.products;
 
 import lombok.RequiredArgsConstructor;
 import me.kevinntech.modules.products.dto.ProductSaveRequestDto;
+import me.kevinntech.modules.products.dto.ProductUpdateRequestDto;
 import me.kevinntech.modules.products.validator.ProductSaveValidator;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Map;
@@ -59,6 +57,21 @@ public class ProductApiController {
         if (isDuplicate) {
             return ResponseEntity.badRequest().build();
         }
+
+        return ResponseEntity.ok().build();
+    }
+
+    /*
+    * 상품 수정
+    * */
+    @PutMapping("/api/v1/products/{productId}")
+    public ResponseEntity update(@PathVariable Long productId, @Valid @RequestBody ProductUpdateRequestDto requestDto, Errors errors){
+        if (errors.hasErrors()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        // 상품 수정 처리
+        productService.updateProduct(productId, requestDto);
 
         return ResponseEntity.ok().build();
     }
