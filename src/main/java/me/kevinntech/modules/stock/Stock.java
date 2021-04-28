@@ -15,8 +15,7 @@ import java.util.List;
 @EqualsAndHashCode(of = "id")
 public class Stock {
 
-    @Id
-    @GeneratedValue
+    @Id @GeneratedValue
     @Column(name = "stock_id")
     private Long id;
 
@@ -51,4 +50,5 @@ public class Stock {
     }
 
 }
+
 

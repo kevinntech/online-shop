@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- 상품 공급 스크립트 -->
+<script type="application/javascript" th:fragment="warehousing-script">
+    var main = {
+        init : function () {
+            var _this = this;
+
+            $('#btn-save').on('click', function () {
+                _this.save();
+            });
+
+        },
+        save : function () {
+            /* Ajax 요청 */
+            var data = {
+                productId: $('#productId').val(),
+                warehousingQuantity: $('#quantity').val(),
+                warehousingPrice: $('#price').val()
+            };
+
+            $.ajax({
+                type: 'POST',
+                url: '/api/v1/warehousing',
+                contentType:'application/json; charset=utf-8',
+                data: JSON.stringify(data)
+            }).done(function() {
+                alert('상품 공급을 완료하였습니다.');
+                window.location.href = '/products/list';
+            }).fail(function (error) {
+                alert('상품 공급에 실패했습니다.');
+            });
+        }
+    };
+
+    main.init();
+</script>

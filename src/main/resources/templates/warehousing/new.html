@@ -3,48 +3,50 @@
       xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/layout/header :: header"></head>
 <body class="bg-light">
-<div th:replace="fragments/layout/navigation :: main-nav"></div>
-<div class="container">
-  <div class="row mt-5 justify-content-center">
-    <div class="col-2">
-      <div th:replace="fragments/layout/admin-menu :: admin-menu(currentMenu='warehousing-new')"></div>
-    </div>
-    <div class="col-8 ml-5">
-      <div class="row">
-        <form id="product-provide-form" class="col-sm-6">
-          <div class="form-group">
-            <label for="productId">상품명</label>
-            <select name="productId" id="productId" class="form-control">
-              <option value="">상품선택</option>
-              <option th:each="product : ${products}"
-                      th:value="${product.id}"
-                      th:text="${product.name}" />
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="price">가격</label>
-            <input id="price" type="text" class="form-control" placeholder="가격을 입력하세요.">
-          </div>
-          <div class="form-group">
-            <label for="quantity">수량</label>
-            <input id="quantity" type="text" class="form-control" placeholder="수량을 입력하세요.">
-          </div>
-        </form>
+  <div th:replace="fragments/layout/navigation :: main-nav"></div>
+  <div class="container">
+    <div class="row mt-5 justify-content-center">
+      <div class="col-2">
+        <div th:replace="fragments/layout/admin-menu :: admin-menu(currentMenu='warehousing-new')"></div>
       </div>
+      <div class="col-8 ml-5">
+        <div class="row">
+          <form id="product-provide-form" class="col-sm-6">
+            <div class="form-group">
+              <label for="productId">상품명</label>
+              <select name="productId" id="productId" class="form-control">
+                <option value="">상품선택</option>
+                <option th:each="product : ${products}"
+                        th:value="${product.id}"
+                        th:text="${product.name}" />
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="price">가격</label>
+              <input id="price" type="text" class="form-control" placeholder="가격을 입력하세요.">
+            </div>
+            <div class="form-group">
+              <label for="quantity">수량</label>
+              <input id="quantity" type="text" class="form-control" placeholder="수량을 입력하세요.">
+            </div>
+          </form>
+        </div>
 
-      <div class="row">
-        <div class="col-sm-6">
-          <button type="submit" id="btn-save" class="btn btn-primary btn-block" aria-describedby="submitHelp">등록하기</button>
+        <div class="row">
+          <div class="col-sm-6">
+            <button type="submit" id="btn-save" class="btn btn-primary btn-block" aria-describedby="submitHelp">등록하기</button>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 
-<!-- Bootstrap js -->
-<script th:replace="fragments/script/main-script :: jquery-script"></script>
-<script th:replace="fragments/script/main-script :: bootstrap-script"></script>
-<!-- csrf 토큰을 추가 -->
-<script th:replace="fragments/script/csrf-token-script :: ajax-csrf-header"></script>
+  <!-- Bootstrap js -->
+  <script th:replace="fragments/script/main-script :: jquery-script"></script>
+  <script th:replace="fragments/script/main-script :: bootstrap-script"></script>
+  <!-- csrf 토큰을 추가 -->
+  <script th:replace="fragments/script/csrf-token-script :: ajax-csrf-header"></script>
+  <!-- 상품 공급 스크립트 -->
+  <script th:replace="fragments/script/warehousing-script :: warehousing-script"></script>
 </body>
 </html>
