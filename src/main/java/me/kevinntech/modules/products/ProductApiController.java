@@ -76,4 +76,19 @@ public class ProductApiController {
         return ResponseEntity.ok().build();
     }
 
+    /*
+    * 상품 삭제
+    * */
+    @DeleteMapping("/api/v1/products/{productId}")
+    public ResponseEntity delete(@PathVariable Long productId){
+        // 상품 삭제 처리
+        Product deletedProduct = productService.deleteProduct(productId);
+
+        if (deletedProduct == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        return ResponseEntity.ok().build();
+    }
+
 }

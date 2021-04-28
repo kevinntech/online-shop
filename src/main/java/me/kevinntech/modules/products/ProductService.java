@@ -61,11 +61,28 @@ public class ProductService {
         return requestDto;
     }
 
-    // 변경 감지 기능을 사용해서 수정하기
+    /*
+    * 변경 감지 기능을 이용한 수정
+    * */
     @Transactional
     public void updateProduct(Long productId, ProductUpdateRequestDto requestDto) {
         Product findProduct = productRepository.findOneById(productId);
 
         findProduct.update(requestDto);
+    }
+
+    /*
+    * 상품 삭제
+    * */
+    @Transactional
+    public Product deleteProduct(Long productId) {
+        Product findProduct = productRepository.findOneById(productId);
+
+        if(findProduct == null)
+            return null;
+
+        productRepository.delete(findProduct);
+
+        return findProduct;
     }
 }

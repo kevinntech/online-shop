@@ -13,8 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -115,6 +114,30 @@ class ProductApiControllerTest {
                     .contentType(MediaType.APPLICATION_JSON) // HTTP 요청 본문으로 JSON을 보내며
                     .accept(MediaType.APPLICATION_JSON) // JSON으로 응답이 오길 바란다.
                     .content(jsonString)
+                    .with(csrf()))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("상품 삭제 - 완료")
+    public void deleteProduct_success() throws Exception {
+        Product product = productFactory.createProduct();
+
+        this.mockMvc.perform(delete("/api/v1/products/" +  product.getId())
+                    .with(csrf()))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        Product findProduct = productRepository.findOneById(product.getId());
+
+        assertThat(findProduct).isNull();
+    }
+
+    @Test
+    @DisplayName("상품 삭제 - 실패")
+    public void deleteProduct_fail() throws Exception {
+        this.mockMvc.perform(delete("/api/v1/products/" + -1)
                     .with(csrf()))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
