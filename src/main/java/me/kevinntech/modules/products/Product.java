@@ -41,4 +41,5 @@ public class Product {
         this.description = requestDto.getDescription();
         this.productImage = requestDto.getProductImage();
     }
+
 }
