@@ -1,6 +1,7 @@
 package me.kevinntech.modules.main;
 
 import me.kevinntech.infra.MockMvcTest;
+import me.kevinntech.modules.users.WithUser;
 import me.kevinntech.modules.users.dto.UserSaveRequestDto;
 import me.kevinntech.modules.users.repository.UserRepository;
 import me.kevinntech.modules.users.service.UserService;
@@ -14,9 +15,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 
 @MockMvcTest
 class MainControllerTest {
@@ -30,7 +32,7 @@ class MainControllerTest {
     void beforeEach(){
         UserSaveRequestDto requestDto = new UserSaveRequestDto();
         requestDto.setNickname("kevin");
-        requestDto.setEmail("kevin@test.com");
+        requestDto.setEmail("kevin@email.com");
         requestDto.setPassword("12345678");
 
         userService.saveNewUser(requestDto);
@@ -46,23 +48,23 @@ class MainControllerTest {
     @Test
     void login_with_email() throws Exception{
         mockMvc.perform(post("/login")
-                .param("username", "kevin@test.com")
-                .param("password", "12345678")
-                .with(csrf()))
+                    .param("username", "kevin@email.com")
+                    .param("password", "12345678")
+                    .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/"))
                 .andExpect(authenticated().withUsername("kevin"));
         // kevin이라는 이름으로 인증 될 것이다.라고 예상한다.
-        // 그 이유는 UserAccount의 생성자에서 username을 nickname으로 했기 때문이다.
+        // 그 이유는 UserCustom의 생성자에서 username을 nickname으로 했기 때문이다.
     }
 
     @DisplayName("닉네임으로 로그인 성공")
     @Test
     void login_with_nickname() throws Exception{
         mockMvc.perform(post("/login")
-                .param("username", "kevin")
-                .param("password", "12345678")
-                .with(csrf()))
+                    .param("username", "kevin")
+                    .param("password", "12345678")
+                    .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/"))
                 .andExpect(authenticated().withUsername("kevin"));
@@ -73,9 +75,9 @@ class MainControllerTest {
     void login_fail() throws Exception{
         // 로그인을 실패하는 경우에는 "/login?error"로 리다이렉트 하게되며 인증되지 않는다.
         mockMvc.perform(post("/login")
-                .param("username", "1111111")
-                .param("password", "000000000")
-                .with(csrf()))
+                    .param("username", "1111111")
+                    .param("password", "000000000")
+                    .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/login?error"))
                 .andExpect(unauthenticated());
@@ -85,10 +87,19 @@ class MainControllerTest {
     @Test
     void logout() throws Exception{
         mockMvc.perform(post("/logout")
-                .with(csrf()))
+                    .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/"))
                 .andExpect(unauthenticated());
+    }
+
+    @Test
+    @DisplayName("메인 페이지 조회")
+    void viewMainPage() throws Exception {
+        mockMvc.perform(get("/"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("index"))
+                .andExpect(model().attributeExists("products"));
     }
 
 }
