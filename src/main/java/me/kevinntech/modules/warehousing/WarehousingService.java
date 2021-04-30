@@ -17,9 +17,7 @@ import java.util.List;
 public class WarehousingService {
 
     private final WarehousingRepository warehousingRepository;
-
     private final StockRepository stockRepository;
-
     private final ProductService productService;
 
     public List<ProductListResponseDto> findProductsForWarehousing() {
