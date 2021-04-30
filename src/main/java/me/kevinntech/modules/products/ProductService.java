@@ -97,4 +97,10 @@ public class ProductService {
 
     }
 
+    public List<ProductListResponseDto> findProductsInStock() {
+        return productRepository.findStockOrderById().stream()
+                .map(ProductListResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
 }
