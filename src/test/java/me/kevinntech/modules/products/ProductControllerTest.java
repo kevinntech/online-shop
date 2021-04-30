@@ -50,4 +50,16 @@ public class ProductControllerTest {
                 .andExpect(model().attributeExists("product"));
     }
 
+    @Test
+    @WithUser("kevin")
+    @DisplayName("상품 조회 폼 조회")
+    void viewProductForm() throws Exception {
+        Product product = productFactory.createProduct();
+
+        mockMvc.perform(get("/products/" + product.getId()))
+                .andExpect(status().isOk())
+                .andExpect(view().name("products/view"))
+                .andExpect(model().attributeExists("product"));
+    }
+
 }

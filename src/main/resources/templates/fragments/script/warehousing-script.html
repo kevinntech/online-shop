@@ -13,6 +13,12 @@
 
         },
         save : function () {
+            if(!$('#quantity').val() || $('#quantity').val() == 0) {
+                $('#quantity').focus();
+                alert('수량을 입력하세요.');
+                return false;
+            }
+
             /* Ajax 요청 */
             var data = {
                 productId: $('#productId').val(),
