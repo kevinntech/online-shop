@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import me.kevinntech.modules.products.dto.ProductListResponseDto;
 import me.kevinntech.modules.products.dto.ProductSaveRequestDto;
 import me.kevinntech.modules.products.dto.ProductUpdateRequestDto;
+import me.kevinntech.modules.products.dto.ProductViewResponseDto;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,6 +55,24 @@ public class ProductController {
         model.addAttribute("product", requestDto);
 
         return "products/edit";
+    }
+
+    /*
+    * 상품 조회
+    * */
+    @GetMapping("/{productId}")
+    public String viewProductForm(@PathVariable Long productId, Model model){
+        Product product = productService.findById(productId);
+
+        if(product == null){
+            model.addAttribute("error", "wrong.productId");
+            return "/";
+        }
+
+        ProductViewResponseDto responseDto = new ProductViewResponseDto(product);
+        model.addAttribute("product", responseDto);
+
+        return "products/view";
     }
 
 }
