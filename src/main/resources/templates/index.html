@@ -5,6 +5,16 @@
   <!-- NAVIGATION -->
   <div th:replace="fragments/layout/navigation :: main-nav"></div>
 
+  <!-- CONTENT -->
+  <div class="container">
+    <div class="row justify-content-center pt-3">
+      <div th:replace="fragments/layout/product-list :: product-list (products=${products})"></div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div th:replace="fragments/layout/footer :: footer"></div>
+
   <!-- Bootstrap js -->
   <script th:replace="fragments/script/main-script :: jquery-script"></script>
   <script th:replace="fragments/script/main-script :: bootstrap-script"></script>
