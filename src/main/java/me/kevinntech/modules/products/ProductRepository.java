@@ -16,4 +16,5 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     Product findOneById(Long id);
 
+    Product findOneByCode(String code);
 }

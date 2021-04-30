@@ -1,18 +1,14 @@
 package me.kevinntech.modules.warehousing;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import me.kevinntech.infra.MockMvcTest;
 import me.kevinntech.modules.products.Product;
 import me.kevinntech.modules.products.ProductFactory;
-import me.kevinntech.modules.products.ProductRepository;
-import me.kevinntech.modules.products.dto.ProductSaveRequestDto;
 import me.kevinntech.modules.stock.StockRepository;
 import me.kevinntech.modules.warehousing.dto.WarehousingSaveRequestDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -22,8 +18,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
+@MockMvcTest
 public class WarehousingApiControllerTest {
 
     @Autowired MockMvc mockMvc;

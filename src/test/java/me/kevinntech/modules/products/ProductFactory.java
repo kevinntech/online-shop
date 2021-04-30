@@ -19,7 +19,12 @@ public class ProductFactory {
         requestDto.setPrice(1000);
         requestDto.setDescription("설명");
 
-        Product savedProduct = productRepository.save(requestDto.toEntity());
+        Product savedProduct;
+
+        if(productRepository.existsByCode(requestDto.getCode()))
+            savedProduct = productRepository.findOneByCode(requestDto.getCode());
+        else
+            savedProduct = productRepository.save(requestDto.toEntity());
 
         return savedProduct;
     }

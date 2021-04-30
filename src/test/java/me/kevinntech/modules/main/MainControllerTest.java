@@ -1,5 +1,6 @@
 package me.kevinntech.modules.main;
 
+import me.kevinntech.infra.MockMvcTest;
 import me.kevinntech.modules.users.dto.UserSaveRequestDto;
 import me.kevinntech.modules.users.repository.UserRepository;
 import me.kevinntech.modules.users.service.UserService;
@@ -8,8 +9,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -19,8 +18,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
+@MockMvcTest
 class MainControllerTest {
 
     @Autowired MockMvc mockMvc;
@@ -31,8 +29,8 @@ class MainControllerTest {
     @BeforeEach
     void beforeEach(){
         UserSaveRequestDto requestDto = new UserSaveRequestDto();
-        requestDto.setNickname("admin");
-        requestDto.setEmail("admin@test.com");
+        requestDto.setNickname("kevin");
+        requestDto.setEmail("kevin@test.com");
         requestDto.setPassword("12345678");
 
         userService.saveNewUser(requestDto);
@@ -48,12 +46,12 @@ class MainControllerTest {
     @Test
     void login_with_email() throws Exception{
         mockMvc.perform(post("/login")
-                .param("username", "admin@test.com")
+                .param("username", "kevin@test.com")
                 .param("password", "12345678")
                 .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/"))
-                .andExpect(authenticated().withUsername("admin"));
+                .andExpect(authenticated().withUsername("kevin"));
         // kevin이라는 이름으로 인증 될 것이다.라고 예상한다.
         // 그 이유는 UserAccount의 생성자에서 username을 nickname으로 했기 때문이다.
     }
@@ -62,12 +60,12 @@ class MainControllerTest {
     @Test
     void login_with_nickname() throws Exception{
         mockMvc.perform(post("/login")
-                .param("username", "admin")
+                .param("username", "kevin")
                 .param("password", "12345678")
                 .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/"))
-                .andExpect(authenticated().withUsername("admin"));
+                .andExpect(authenticated().withUsername("kevin"));
     }
 
     @DisplayName("로그인 실패")

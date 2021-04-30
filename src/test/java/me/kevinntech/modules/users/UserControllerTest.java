@@ -1,14 +1,13 @@
 package me.kevinntech.modules.users;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import me.kevinntech.infra.MockMvcTest;
 import me.kevinntech.modules.users.domain.User;
 import me.kevinntech.modules.users.dto.UserSaveRequestDto;
 import me.kevinntech.modules.users.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -21,8 +20,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
-@AutoConfigureMockMvc
+@MockMvcTest
 class UserControllerTest {
 
     @Autowired MockMvc mockMvc;
@@ -43,7 +41,7 @@ class UserControllerTest {
     @Test
     void saveNewUser_with_wrong_input() throws Exception {
         UserSaveRequestDto requestDto = new UserSaveRequestDto();
-        requestDto.setNickname("kevin");
+        requestDto.setNickname("test");
         requestDto.setEmail("email..");
         requestDto.setPassword("12345");
 
@@ -62,20 +60,20 @@ class UserControllerTest {
     @Test
     void saveNewUser_with_correct_input() throws Exception {
         UserSaveRequestDto requestDto = new UserSaveRequestDto();
-        requestDto.setNickname("kevin");
-        requestDto.setEmail("kevin@test.com");
+        requestDto.setNickname("test");
+        requestDto.setEmail("test@test.com");
         requestDto.setPassword("12345678");
 
         String jsonString = objectMapper.writeValueAsString(requestDto);
 
         mockMvc.perform(post("/api/v1/users")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonString)
-                .with(csrf()))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(jsonString)
+                    .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(authenticated());  // 로그인 테스트 코드 (로그인 O)
 
-        User user = userRepository.findByEmail("kevin@test.com");
+        User user = userRepository.findByEmail("test@test.com");
         assertThat(user).isNotNull();
         assertThat(user.getPassword()).isNotEqualTo("12345678"); // 패스워드가 인코딩 되었는지 확인
     }

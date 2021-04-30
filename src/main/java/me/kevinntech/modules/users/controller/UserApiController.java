@@ -1,6 +1,7 @@
 package me.kevinntech.modules.users.controller;
 
 import lombok.RequiredArgsConstructor;
+import me.kevinntech.modules.users.domain.User;
 import me.kevinntech.modules.users.dto.UserSaveRequestDto;
 import me.kevinntech.modules.users.service.UserService;
 import me.kevinntech.modules.users.validator.UserSaveValidator;
@@ -38,7 +39,8 @@ public class UserApiController {
         }
 
         // 회원 가입 처리
-        userService.saveNewUser(requestDto);
+        User user = userService.saveNewUser(requestDto);
+        userService.login(user);
 
         return ResponseEntity.ok().build();
     }

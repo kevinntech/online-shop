@@ -18,14 +18,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    @Transactional
-    public void saveNewUser(UserSaveRequestDto requestDto) {
+    public User saveNewUser(UserSaveRequestDto requestDto) {
         // 1) 회원 객체 생성
         User user = User.builder()
                 .email(requestDto.getEmail())
@@ -33,11 +33,12 @@ public class UserService implements UserDetailsService {
                 .password(passwordEncoder.encode(requestDto.getPassword())) // 패스워드를 인코딩 한다.
                 .build();
 
+        user.completeSignUp();
+
         // 2) 회원 저장
         User newUser = userRepository.save(user); // userRepository로 user를 저장한다.
 
-        newUser.completeSignUp();
-        login(user); // 로그인 처리 ★★★
+        return newUser;
     }
 
     public void login(User user) {
@@ -49,6 +50,7 @@ public class UserService implements UserDetailsService {
         SecurityContextHolder.getContext().setAuthentication(token);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public UserDetails loadUserByUsername(String emailOrNickname) throws UsernameNotFoundException {
         // 처음에는 이메일을 입력할 것이라 가정한다.
