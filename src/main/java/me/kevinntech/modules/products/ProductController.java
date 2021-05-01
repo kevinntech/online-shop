@@ -1,16 +1,13 @@
 package me.kevinntech.modules.products;
 
 import lombok.RequiredArgsConstructor;
-import me.kevinntech.modules.products.dto.ProductListResponseDto;
-import me.kevinntech.modules.products.dto.ProductSaveRequestDto;
-import me.kevinntech.modules.products.dto.ProductUpdateRequestDto;
-import me.kevinntech.modules.products.dto.ProductViewResponseDto;
+import me.kevinntech.modules.products.dto.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -73,6 +70,28 @@ public class ProductController {
         model.addAttribute("product", responseDto);
 
         return "products/view";
+    }
+
+    /*
+    * 주문서에 보낼 데이터 설정
+    * */
+    @PostMapping("/{productId}")
+    public String sendToOrderForm(@PathVariable Long productId, @RequestParam("quantity") Long quantity, Model model, RedirectAttributes attributes){
+        Product product = productService.findById(productId);
+
+        if(product == null){
+            model.addAttribute("error", "wrong.productId");
+            return "products/view";
+        }
+
+        // 주문서에 보여줄 데이터 설정
+        ProductToOrderForm responseDto = new ProductToOrderForm(product, quantity);
+        List<ProductToOrderForm> orderList = new ArrayList<>();
+        orderList.add(responseDto);
+
+        attributes.addFlashAttribute("orderList", orderList);
+
+        return "redirect:/orders/new";
     }
 
 }
