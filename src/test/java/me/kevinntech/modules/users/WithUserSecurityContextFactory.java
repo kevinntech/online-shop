@@ -17,8 +17,8 @@ public class WithUserSecurityContextFactory implements WithSecurityContextFactor
     private final UserService userService;
 
     @Override
-    public SecurityContext createSecurityContext(WithUser withAccount) {
-        String nickname = withAccount.value();
+    public SecurityContext createSecurityContext(WithUser withUser) {
+        String nickname = withUser.value();
 
         UserSaveRequestDto requestDto = new UserSaveRequestDto();
         requestDto.setNickname(nickname);

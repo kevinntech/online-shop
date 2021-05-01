@@ -73,7 +73,9 @@ public class Order {
      * */
     public void changeUser(User user){
         this.user = user;
+        System.out.println("=== " + user.getOrders() + "==="); // 에러 테스트
         user.getOrders().add(this);
+
     }
 
     public void addOrderProduct(OrderProduct orderProduct){
