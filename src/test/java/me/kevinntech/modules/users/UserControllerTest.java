@@ -49,9 +49,9 @@ class UserControllerTest {
 
         // 폼을 제출(submit)하는 테스트 코드를 작성할 때는 csrf 토큰을 추가해야 한다.
         mockMvc.perform(post("/api/v1/users")
-                .contentType(MediaType.APPLICATION_JSON) // HTTP 요청 본문으로 JSON을 보낸다.
-                .content(jsonString)
-                .with(csrf()))
+                    .contentType(MediaType.APPLICATION_JSON) // HTTP 요청 본문으로 JSON을 보낸다.
+                    .content(jsonString)
+                    .with(csrf()))
                 .andExpect(status().isBadRequest())
                 .andExpect(unauthenticated()); // 로그인 테스트 코드 (로그인 X)
     }
