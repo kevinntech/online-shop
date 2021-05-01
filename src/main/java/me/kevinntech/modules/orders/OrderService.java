@@ -2,6 +2,7 @@ package me.kevinntech.modules.orders;
 
 import lombok.RequiredArgsConstructor;
 import me.kevinntech.modules.orders.dto.OrderSaveRequestDto;
+import me.kevinntech.modules.orders.dto.OrderViewResponseDto;
 import me.kevinntech.modules.products.Product;
 import me.kevinntech.modules.products.ProductRepository;
 import me.kevinntech.modules.products.dto.ProductToOrderForm;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -67,6 +69,12 @@ public class OrderService {
                 .build();
 
         return orderRepository.save(order).getId();
+    }
+
+    public List<OrderViewResponseDto> findOrders() {
+        return orderRepository.findAllOrderById().stream()
+                .map(OrderViewResponseDto::new)
+                .collect(Collectors.toList());
     }
 
 }

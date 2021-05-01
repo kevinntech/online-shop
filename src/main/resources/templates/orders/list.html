@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/layout/header :: header"></head>
+<body class="bg-light">
+    <div th:replace="fragments/layout/navigation :: main-nav"></div>
+    <div class="container">
+        <div class="row mt-5 justify-content-center">
+            <div class="col-2">
+                <div th:replace="fragments/layout/admin-menu :: admin-menu(currentMenu='order-list')"></div>
+            </div>
+            <div class="col-10">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>주문 상품</th>
+                                <th>배송 상태</th>
+                                <th>받는 사람 이름</th>
+                                <th>주소</th>
+                                <th>전화번호</th>
+                                <th>주문 금액</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="order : ${orders}">
+                                <td id="id" th:text="${order.id}"></td>
+                                <td id="code" th:text="${order.orderedProductName}"></td>
+                                <td id="deliveryStatus" th:text="${order.deliveryStatus}"></td>
+                                <td id="deliveredName" th:text="${order.deliveredName}"></td>
+                                <td id="address" th:text="${order.address}"></td>
+                                <td id="phoneNumber" th:text="${order.phoneNumber}"></td>
+                                <td id="orderedTotalAmount" th:text="${#numbers.formatInteger(order.orderedTotalAmount, 0, 'COMMA')} + 원"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap js -->
+    <script th:replace="fragments/script/main-script :: jquery-script"></script>
+    <script th:replace="fragments/script/main-script :: bootstrap-script"></script>
+</body>
+</html>

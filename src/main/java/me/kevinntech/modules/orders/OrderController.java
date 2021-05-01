@@ -1,6 +1,7 @@
 package me.kevinntech.modules.orders;
 
 import lombok.RequiredArgsConstructor;
+import me.kevinntech.modules.orders.dto.OrderViewResponseDto;
 import me.kevinntech.modules.products.dto.ProductToOrderForm;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +15,8 @@ import java.util.List;
 @RequestMapping("/orders")
 @RequiredArgsConstructor
 public class OrderController {
+
+    private final OrderService orderService;
 
     /*
     * 주문서 폼
@@ -41,6 +44,14 @@ public class OrderController {
         model.addAttribute("totalPaymentAmount", totalPaymentAmount);
 
         return "orders/new";
+    }
+
+    @GetMapping("/list")
+    public String ordersList(Model model){
+        List<OrderViewResponseDto> orders = orderService.findOrders();
+        model.addAttribute("orders", orders);
+
+        return "orders/list";
     }
 
 }

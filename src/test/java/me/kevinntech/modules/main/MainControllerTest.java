@@ -54,8 +54,6 @@ class MainControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/"))
                 .andExpect(authenticated().withUsername("kevin"));
-        // kevin이라는 이름으로 인증 될 것이다.라고 예상한다.
-        // 그 이유는 UserCustom의 생성자에서 username을 nickname으로 했기 때문이다.
     }
 
     @DisplayName("닉네임으로 로그인 성공")

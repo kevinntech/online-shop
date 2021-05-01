@@ -55,4 +55,14 @@ class OrderControllerTest {
                 .andExpect(status().is3xxRedirection());
     }
 
+    @Test
+    @WithUser("kevin")
+    @DisplayName("주문 내역 조회")
+    void ordersList() throws Exception {
+        mockMvc.perform(get("/orders/list"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("orders/list"))
+                .andExpect(model().attributeExists("orders"));
+    }
+
 }
