@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- 주문 스크립트 -->
+<script type="application/javascript" th:inline="javascript" th:fragment="order-script">
+    var main = {
+        init : function () {
+            var _this = this;
+
+            $('#btn-save').on('click', function () {
+                _this.save();
+            });
+
+        },
+        save : function () {
+            // 컨트롤러에서 뷰로 넘어온 orderList(ArrayList)를 그대로 설정한다.
+            var orderList = /*[[${orderList}]]*/ null;
+
+            /* Ajax 요청 */
+            var data = {
+                productToOrderForms: orderList,
+                deliveredName: $('#deliveredName').val(),
+                phoneNumber: $('#phoneNumber').val(),
+                address: $('#address').val(),
+                requestsForDelivery: $('#requestsForDelivery').val()
+            };
+
+            $.ajax({
+                type: 'POST',
+                url: '/api/v1/orders',
+                contentType:'application/json; charset=utf-8',
+                data: JSON.stringify(data)
+            }).done(function() {
+                alert('주문을 완료하였습니다.');
+                window.location.href = '/';
+            }).fail(function (error) {
+                alert('주문에 실패했습니다.');
+            });
+        }
+    };
+
+    main.init();
+</script>

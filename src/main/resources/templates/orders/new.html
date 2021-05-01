@@ -113,5 +113,9 @@
     <!-- Bootstrap js -->
     <script th:replace="fragments/script/main-script :: jquery-script"></script>
     <script th:replace="fragments/script/main-script :: bootstrap-script"></script>
+    <!-- csrf 토큰을 추가 -->
+    <script th:replace="fragments/script/csrf-token-script :: ajax-csrf-header"></script>
+    <!-- 주문 스크립트 -->
+    <script th:replace="fragments/script/order-script :: order-script"></script>
 </body>
 </html>

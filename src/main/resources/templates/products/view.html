@@ -4,6 +4,13 @@
 <head th:replace="fragments/layout/header :: header"></head>
 <body>
     <div th:replace="fragments/layout/navigation :: main-nav"></div>
+    <!-- 에러 메시지 표시 -->
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+        <span th:text="${error}">에러 메시지</span>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
     <div class="container" th:object="${product}">
         <div class="row mt-5">
             <div class="col-4">

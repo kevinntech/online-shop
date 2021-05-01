@@ -2,6 +2,8 @@ package me.kevinntech.modules.products;
 
 import lombok.RequiredArgsConstructor;
 import me.kevinntech.modules.products.dto.*;
+import me.kevinntech.modules.stock.Stock;
+import me.kevinntech.modules.stock.StockRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +18,7 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
+    private final StockRepository stockRepository;
 
     /*
     * 상품 등록 폼
@@ -80,8 +83,16 @@ public class ProductController {
         Product product = productService.findById(productId);
 
         if(product == null){
-            model.addAttribute("error", "wrong.productId");
-            return "products/view";
+            attributes.addFlashAttribute("error", "존재하지 않는 상품입니다.");
+            return "redirect:/products/" + product.getId();
+        }
+
+        Stock findStock = stockRepository.findByProductId(product.getId());
+
+        // 현재 재고 수량이 주문 수량 보다 작다면
+        if(findStock.getQuantity() < quantity){
+            attributes.addFlashAttribute("error", "현재 재고 수량은 " + findStock.getQuantity() + "개입니다.");
+            return "redirect:/products/" + product.getId();
         }
 
         // 주문서에 보여줄 데이터 설정

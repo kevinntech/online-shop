@@ -28,6 +28,9 @@ public class Order {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private List<OrderProduct> orderProducts = new ArrayList<>();
+
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus; // 주문 상태 [ORDER, CANCEL]
 
@@ -44,5 +47,40 @@ public class Order {
 
     private String requestsForDelivery; // 배송 시 요청사항
 
+    @Builder
+    private Order(User user, OrderSaveRequestDto requestDto, List<OrderProduct> orderProducts){
+        this.orderStatus = OrderStatus.ORDER;
+        this.deliveryStatus = DeliveryStatus.READY;
+        this.orderedName = "";
+        this.deliveredName = requestDto.getDeliveredName();
+        this.address = requestDto.getAddress();
+        this.phoneNumber = requestDto.getPhoneNumber();
+        this.requestsForDelivery = requestDto.getRequestsForDelivery();
+
+        /*
+         * 연관관계 설정
+         * */
+        this.changeUser(user);
+
+        for(OrderProduct orderProduct : orderProducts){
+            this.addOrderProduct(orderProduct);
+            orderProduct.changeOrder(this);
+        }
+    }
+
+    /*
+     * 연관관계 메소드
+     * */
+    public void changeUser(User user){
+        this.user = user;
+        user.getOrders().add(this);
+    }
+
+    public void addOrderProduct(OrderProduct orderProduct){
+        orderProducts.add(orderProduct);
+        orderProduct.changeOrder(this);
+    }
+
 }
+
 

@@ -1,6 +1,7 @@
 package me.kevinntech.modules.users.domain;
 
 import lombok.*;
+import me.kevinntech.modules.orders.Order;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -25,6 +26,9 @@ public class User {
 
     @Column(unique = true)
     private String nickname;
+
+    @OneToMany(mappedBy = "user")
+    private List<Order> orders = new ArrayList<>();
 
     private String password;
 

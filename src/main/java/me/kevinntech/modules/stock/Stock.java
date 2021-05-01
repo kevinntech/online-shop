@@ -1,6 +1,7 @@
 package me.kevinntech.modules.stock;
 
 import lombok.*;
+import me.kevinntech.modules.orders.OrderProduct;
 import me.kevinntech.modules.products.Product;
 import me.kevinntech.modules.warehousing.Warehousing;
 
@@ -22,6 +23,10 @@ public class Stock {
     @OneToOne
     @JoinColumn(name = "product_id")
     private Product product;
+
+    @OneToMany(mappedBy = "stock")
+    @Column(name = "orderProduct_id")
+    private List<OrderProduct> orderProductList = new ArrayList<>();
 
     @OneToMany(mappedBy = "stock")
     @Column(name = "warehousing_id")
@@ -47,6 +52,10 @@ public class Stock {
             this.quantity += warehousing.getQuantity();
         }
 
+        // 주문(-)
+        for(OrderProduct orderProduct : orderProductList){
+            this.quantity -= orderProduct.getOrderQuantity();
+        }
     }
 
 }
