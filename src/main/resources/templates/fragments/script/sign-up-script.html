@@ -3,38 +3,144 @@
 
 <!-- 회원가입 스크립트 -->
 <script type="application/javascript" th:fragment="sign-up-script">
-  var main = {
-    init : function () {
-      var _this = this;
+    // 저장하기 전, 입력하지 않은 필수 값에 대해 입력 요구하기
+    var form_validation = {
+        validate : function () {
+            var is_empty = false;
 
-      $('#btn-save').on('click', function () {
-        _this.save();
-      });
+            $('#sign-up-form').find('.require-validation').each(function(){
+                if(!$(this).val()) {
+                    $(this).focus();
+                    is_empty = true;
+                    return false;
+                }
+            });
 
-    },
-    save : function () {
-      var data = {
-        nickname: $('#nickname').val(),
-        email: $('#email').val(),
-        password: $('#password').val()
-      };
+            if(is_empty) {
+                return false;
+            }
 
-      $.ajax({
-        type: 'POST',
-        url: '/api/v1/users',
-        //dataType: 'json',
-        contentType:'application/json; charset=utf-8',
-        data: JSON.stringify(data)
-      }).done(function() {
-        alert('회원가입을 완료하였습니다.');
-        window.location.href = '/';
-      }).fail(function (error) {
-        alert('회원가입에 실패했습니다.');
-        window.location.href = '/users/sign-up';
-        //alert(JSON.stringify(error));
-      });
+            return true;
+        }
     }
-  };
 
-  main.init();
+    var is_duplication_nickname = false;
+    var is_duplication_email = false;
+
+    var main = {
+        init : function () {
+            var _this = this;
+
+            $('#btn-save').on('click', function () {
+                _this.save();
+            });
+
+            $('#btn-validation-nickname').on('click', function () {
+                _this.validateNickname();
+            });
+
+            $('#btn-validation-email').on('click', function () {
+                _this.validateEmail();
+            });
+        },
+        save : function () {
+            var validation_result = form_validation.validate();
+
+            if(!validation_result){
+                alert('입력하지 않은 값이 있습니다.');
+                return false;
+            }
+
+            var password = $('#password').val();
+
+            if(!is_duplication_nickname){
+                alert('별명에 대한 중복 확인을 진행 하세요.');
+                return false;
+            }else if(!is_duplication_email){
+                alert('이메일에 대한 중복 확인을 진행 하세요.');
+                return false;
+            }else if(password.indexOf(" ") != -1){
+                alert('패스워드에 공백을 사용할 수 없습니다.');
+                return false;
+            }
+
+            if(password.length < 8 || password.length > 50){
+                alert('패스워드를 8자 이상 50자 이내로 입력하세요.');
+                return false;
+            }
+
+            var data = {
+                nickname: $('#nickname').val(),
+                email: $('#email').val(),
+                password: $('#password').val()
+            };
+
+            $.ajax({
+                type: 'POST',
+                url: '/api/v1/users',
+                contentType:'application/json; charset=utf-8',
+                data: JSON.stringify(data)
+            }).done(function() {
+                alert('회원가입을 완료하였습니다.');
+                window.location.href = '/';
+            }).fail(function (error) {
+                alert('회원가입에 실패했습니다.');
+                window.location.href = '/users/sign-up';
+            });
+        },
+        validateNickname : function () {
+            /* Ajax 요청 */
+            if(!$('#nickname').val()) {
+                $('#nickname').focus();
+                alert('별명을 입력하세요.');
+                return false;
+            }
+
+            var data = {
+                nickname: $('#nickname').val()
+            };
+
+            $.ajax({
+                type: 'POST',
+                url: '/api/v1/users/validate-nickname',
+                contentType:'application/json; charset=utf-8',
+                data: JSON.stringify(data)
+            }).done(function() {
+                is_duplication_nickname = true;
+                alert('사용 할 수 있는 별명입니다.');
+            }).fail(function (error) {
+                is_duplication_nickname = false;
+                alert('이미 존재하는 별명입니다.');
+                $('#nickname').val('');
+            });
+        },
+        validateEmail : function () {
+            /* Ajax 요청 */
+            if(!$('#email').val()) {
+                $('#email').focus();
+                alert('이메일을 입력하세요.');
+                return false;
+            }
+
+            var data = {
+                email: $('#email').val()
+            };
+
+            $.ajax({
+                type: 'POST',
+                url: '/api/v1/users/validate-email',
+                contentType:'application/json; charset=utf-8',
+                data: JSON.stringify(data)
+            }).done(function() {
+                is_duplication_email = true;
+                alert('사용 할 수 있는 이메일입니다.');
+            }).fail(function (error) {
+                is_duplication_email = false;
+                alert('이미 존재하는 이메일입니다.');
+                $('#email').val('');
+            });
+        }
+    };
+
+    main.init();
 </script>

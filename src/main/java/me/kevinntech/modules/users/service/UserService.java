@@ -70,4 +70,21 @@ public class UserService implements UserDetailsService {
         // 위의 과정을 통과 했다면 유저가 있다는 것이므로 Principal에 해당하는 객체(UserAccount)를 반환하면 된다.
         return new UserCustom(user);
     }
+
+    @Transactional(readOnly = true)
+    public boolean isDuplicateNickname(String nickname) {
+        if(userRepository.existsByNickname(nickname))
+            return true;
+
+        return false;
+    }
+
+    @Transactional(readOnly = true)
+    public boolean isDuplicateEmail(String email) {
+        if(userRepository.existsByEmail(email))
+            return true;
+
+        return false;
+    }
+
 }

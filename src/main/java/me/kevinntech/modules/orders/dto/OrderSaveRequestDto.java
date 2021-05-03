@@ -3,7 +3,6 @@ package me.kevinntech.modules.orders.dto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import me.kevinntech.modules.products.dto.ProductToOrderForm;
-import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;

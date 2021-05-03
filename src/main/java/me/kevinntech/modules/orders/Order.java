@@ -24,7 +24,7 @@ public class Order {
     @Column(name = "order_id")
     private Long id;
 
-    @ManyToOne(fetch = LAZY)     //Order와 User는 다대일 관계이다.
+    @ManyToOne(fetch = LAZY)     //Order와 User는 다대일 관계
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -73,9 +73,7 @@ public class Order {
      * */
     public void changeUser(User user){
         this.user = user;
-        System.out.println("=== " + user.getOrders() + "==="); // 에러 테스트
         user.getOrders().add(this);
-
     }
 
     public void addOrderProduct(OrderProduct orderProduct){

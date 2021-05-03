@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -41,6 +42,36 @@ public class UserApiController {
         // 회원 가입 처리
         User user = userService.saveNewUser(requestDto);
         userService.login(user);
+
+        return ResponseEntity.ok().build();
+    }
+
+    /*
+     * 닉네임 중복 확인
+     * */
+    @PostMapping("/api/v1/users/validate-nickname")
+    public ResponseEntity validateNickname(@RequestBody Map<String, Object> param){
+        String nickname = (String) param.get("nickname");
+        boolean isDuplicateNickname = userService.isDuplicateNickname(nickname);
+
+        if (isDuplicateNickname) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        return ResponseEntity.ok().build();
+    }
+
+    /*
+     * 이메일 중복 확인
+     * */
+    @PostMapping("/api/v1/users/validate-email")
+    public ResponseEntity validateEmail(@RequestBody Map<String, Object> param){
+        String email = (String) param.get("email");
+        boolean isDuplicateEmail = userService.isDuplicateEmail(email);
+
+        if (isDuplicateEmail) {
+            return ResponseEntity.badRequest().build();
+        }
 
         return ResponseEntity.ok().build();
     }
