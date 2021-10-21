@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/layout/header :: header"></head>
+<body>
+    <div th:replace="fragments/layout/navigation :: main-nav"></div>
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>재고 수량이 부족한 상품이 존재합니다.</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div class="container">
+        <div class="row mt-5">
+            <div class="col-12"> <h3>장바구니</h3> </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th width="20%"></th>
+                                <th>상품명</th>
+                                <th>품번</th>
+                                <th>가격</th>
+                                <th>수량</th>
+                                <th>총 금액</th>
+                                <th>재고 수량</th>
+                                <th></th>
+                                <th></th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="cartProduct : ${cart.cartProducts}">
+                                <td id="photo">
+                                    <img src="/images/default_image.png" class="img-fluid" th:if="${#strings.isEmpty(cartProduct.productImage)}">
+                                    <img th:if="${!#strings.isEmpty(cartProduct.productImage)}" class="img-fluid"
+                                         th:src="${cartProduct.productImage}" alt="상품 이미지"/>
+                                </td>
+                                <td id="name" th:text="${cartProduct.productName}"></td>
+                                <td id="id" th:text="${cartProduct.productId}"></td>
+                                <td id="price" th:text="${#numbers.formatInteger(cartProduct.productPrice, 0, 'COMMA')} + 원"></td>
+                                <td id="quantity" th:text="${#numbers.formatInteger(cartProduct.totalQuantity, 0, 'COMMA')}"></td>
+                                <td id="amount" th:text="${#numbers.formatInteger(cartProduct.totalAmount, 0, 'COMMA')} + 원"></td>
+                                <td id="stockQuantity" th:text="${#numbers.formatInteger(cartProduct.stockQuantity, 0, 'COMMA')}"></td>
+                                <td>
+                                    <button type="button" id="btn-delete" class="btn-delete btn btn-danger">삭제</button>
+                                </td>
+                                <td>
+                                    <div class="alert alert-danger" th:if="${cartProduct.totalQuantity > cartProduct.stockQuantity}" role="alert">
+                                        재고 부족!
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <!-- 변경 필요 -->
+                        <form th:action="@{/carts}" method="post">
+                            <button class="btn btn-primary mt-3 float-right" type="submit" id="btn-order-cart-product">주문하기</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap js -->
+    <script th:replace="fragments/script/main-script :: jquery-script"></script>
+    <script th:replace="fragments/script/main-script :: bootstrap-script"></script>
+    <!-- csrf 토큰을 추가 -->
+    <script th:replace="fragments/script/csrf-token-script :: ajax-csrf-header"></script>
+    <!-- 장바구니 추가, 삭제 스크립트 -->
+    <script th:replace="fragments/script/shopping-cart-script :: add-to-cart"></script>
+</body>
+</html>

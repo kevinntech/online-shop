@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- 장바구니에 상품 추가 스크립트 -->
+<script type="application/javascript" th:fragment="add-to-cart">
+    var main = {
+        init : function () {
+            var _this = this;
+
+            $('#btn-add-to-cart').on('click', function () {
+                _this.save();
+            });
+
+            $('.btn-delete').on('click', function () {
+                /* 삭제 버튼을 의미 */
+                var button = $(this);
+
+                _this.delete(button);
+            });
+        },
+        save : function () {
+            if(!$('#quantity').val() || $('#quantity').val() == 0) {
+                $('#quantity').focus();
+                alert('수량을 입력하세요.');
+                return false;
+            }
+
+            /* Ajax 요청 */
+            var data = {
+                productId: $('#productId').val(),
+                quantity: $('#quantity').val()
+            };
+
+            $.ajax({
+                type: 'POST',
+                url: '/api/v1/carts',
+                contentType:'application/json; charset=utf-8',
+                data: JSON.stringify(data)
+            }).done(function() {
+                alert('장바구니 담기를 완료하였습니다.');
+            }).fail(function (error) {
+                alert('장바구니 담기에 실패했습니다.');
+            });
+        },
+        delete : function (button) {
+            var tr = button.parent().parent();  // 삭제 버튼의 부모는 <td> 이며 <td>의 부모는 <tr>이다.
+            var td = tr.children();
+
+            // 삭제 버튼 클릭 시 해당 행의 값을 가져온다.
+            var photo = td.eq(0).text();
+            var name = td.eq(1).text();
+            var id = td.eq(2).text();
+
+            $.ajax({
+                type: 'DELETE',
+                url: '/api/v1/carts/' + id,
+                contentType:'application/json; charset=utf-8'
+            }).done(function() {
+                // alert('상품 삭제를 완료하였습니다.');
+                window.location.href = '/carts';
+            }).fail(function (error) {
+                alert('상품 삭제에 실패했습니다.');
+            });
+        },
+    };
+
+    main.init();
+</script>

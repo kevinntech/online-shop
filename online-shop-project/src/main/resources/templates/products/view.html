@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/layout/header :: header"></head>
+<body>
+    <div th:replace="fragments/layout/navigation :: main-nav"></div>
+    <!-- 에러 메시지 표시 -->
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+        <span th:text="${error}">에러 메시지</span>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="container" th:object="${product}">
+        <div class="row mt-5">
+            <div class="col-4">
+                <div class="row justify-content-center">
+                    <div class="col-sm-10">
+                        <img src="/images/default_image.png" class="img-fluid" th:if="${#strings.isEmpty(product.productImage)}">
+                        <img th:if="${!#strings.isEmpty(product.productImage)}" class="img-fluid"
+                             th:src="${product.productImage}" alt="상품 이미지"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-8">
+                <div class="row">
+                    <div class="col-sm-2">
+                        <span>브랜드</span>
+                    </div>
+                    <div class="col-sm-10">
+                        <span th:text="*{brand}"></span>
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-sm-2">
+                        <span>품번</span>
+                    </div>
+                    <div class="col-sm-10">
+                        <span th:text="*{code}" id="productCode"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <input id="productId" type="hidden" th:field="*{id}" class="form-control" />
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-sm-2">
+                        <span>가격</span>
+                    </div>
+                    <div class="col-sm-10">
+                        <span th:text="${#numbers.formatInteger(product.price, 0, 'COMMA')} + 원"></span>
+                    </div>
+                </div>
+
+                <form th:action="@{'/products/' + ${product.id}}" method="post">
+                    <div class="form-group row mt-3">
+                        <label for="quantity" class="col-sm-2 col-form-label">수량</label>
+                        <div class="col-sm-10">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <input id="quantity" name="quantity" type="number" value="0" min="0" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-sm-2">
+                            <span>재고</span>
+                        </div>
+                        <div class="col-sm-10">
+                            <span th:text="${#numbers.formatInteger(stockQuantity, 0, 'COMMA')} + 개"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row mt-5">
+                        <div class="col-sm-10">
+                            <button type="submit" class="btn btn-primary">구매하기</button>
+                            <button class="btn btn-success" type="button" id="btn-add-to-cart">장바구니 담기</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- <div class="row mt-4 product-view-divider"></div> -->
+        <!--
+        <div class="row mt-4">
+            <div class="col-12">
+                상세정보
+            </div>
+        </div> -->
+    </div>
+
+    <!-- Bootstrap js -->
+    <script th:replace="fragments/script/main-script :: jquery-script"></script>
+    <script th:replace="fragments/script/main-script :: bootstrap-script"></script>
+    <!-- csrf 토큰을 추가 -->
+    <script th:replace="fragments/script/csrf-token-script :: ajax-csrf-header"></script>
+    <!-- 장바구니 스크립트 -->
+    <script th:replace="fragments/script/shopping-cart-script :: add-to-cart"></script>
+    <!-- 폼 검증 -->
+    <script th:replace="fragments/script/form-validation :: form-validation"></script>
+</body>
+</html>
