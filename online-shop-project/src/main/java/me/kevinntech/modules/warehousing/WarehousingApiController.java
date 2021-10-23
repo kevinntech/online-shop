@@ -1,6 +1,7 @@
 package me.kevinntech.modules.warehousing;
 
 import lombok.RequiredArgsConstructor;
+import me.kevinntech.modules.main.exception.NotValidArgumentException;
 import me.kevinntech.modules.warehousing.dto.WarehousingSaveRequestDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
@@ -29,9 +30,8 @@ public class WarehousingApiController {
         Warehousing savedWarehousing = warehousingService.saveNewWarehousing(requestDto);
 
         // 등록 실패 시, bad request
-        if(savedWarehousing == null){
-            return ResponseEntity.badRequest().build();
-        }
+        if (savedWarehousing == null)
+            throw new NotValidArgumentException();
 
         return ResponseEntity.ok().build();
     }

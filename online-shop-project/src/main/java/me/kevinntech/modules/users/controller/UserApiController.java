@@ -1,6 +1,8 @@
 package me.kevinntech.modules.users.controller;
 
 import lombok.RequiredArgsConstructor;
+import me.kevinntech.modules.main.exception.DuplicateDataException;
+import me.kevinntech.modules.main.exception.NotValidArgumentException;
 import me.kevinntech.modules.users.domain.User;
 import me.kevinntech.modules.users.dto.UserSaveRequestDto;
 import me.kevinntech.modules.users.service.UserService;
@@ -35,9 +37,8 @@ public class UserApiController {
 
     @PostMapping("/api/v1/users")
     public ResponseEntity saveNewUser(@Valid @RequestBody UserSaveRequestDto requestDto, Errors errors){
-        if (errors.hasErrors()) {
-            return ResponseEntity.badRequest().build();
-        }
+        if (errors.hasErrors())
+            throw new NotValidArgumentException();
 
         // 회원 가입 처리
         User user = userService.saveNewUser(requestDto);
@@ -52,11 +53,10 @@ public class UserApiController {
     @PostMapping("/api/v1/users/validate-nickname")
     public ResponseEntity validateNickname(@RequestBody Map<String, Object> param){
         String nickname = (String) param.get("nickname");
-        boolean isDuplicateNickname = userService.isDuplicateNickname(nickname);
+        boolean isDuplicatedNickname = userService.isDuplicateNickname(nickname);
 
-        if (isDuplicateNickname) {
-            return ResponseEntity.badRequest().build();
-        }
+        if (isDuplicatedNickname)
+            throw new DuplicateDataException();
 
         return ResponseEntity.ok().build();
     }
@@ -67,11 +67,10 @@ public class UserApiController {
     @PostMapping("/api/v1/users/validate-email")
     public ResponseEntity validateEmail(@RequestBody Map<String, Object> param){
         String email = (String) param.get("email");
-        boolean isDuplicateEmail = userService.isDuplicateEmail(email);
+        boolean isDuplicatedEmail = userService.isDuplicateEmail(email);
 
-        if (isDuplicateEmail) {
-            return ResponseEntity.badRequest().build();
-        }
+        if (isDuplicatedEmail)
+            throw new DuplicateDataException();
 
         return ResponseEntity.ok().build();
     }

@@ -1,6 +1,8 @@
 package me.kevinntech.modules.cart;
 
 import lombok.RequiredArgsConstructor;
+import me.kevinntech.modules.main.exception.DataNotFoundException;
+import me.kevinntech.modules.main.exception.NotValidArgumentException;
 import me.kevinntech.modules.products.Product;
 import me.kevinntech.modules.products.ProductService;
 import org.springframework.http.ResponseEntity;
@@ -27,9 +29,11 @@ public class CartApiController {
 
         Product product = productService.findById(productId);
 
-        if (product == null || quantity == 0) {
-            return ResponseEntity.badRequest().build();
-        }
+        if (quantity == 0)
+            throw new NotValidArgumentException();
+
+        if (product == null)
+            throw new DataNotFoundException();
 
         CartProduct cartProduct = new CartProduct(product, quantity);
         cart.addCartProduct(cartProduct);
@@ -53,9 +57,8 @@ public class CartApiController {
             }
         }
 
-        if (isRemoved == false) {
-            return ResponseEntity.badRequest().build();
-        }
+        if (isRemoved == false)
+            throw new DataNotFoundException();
 
         return ResponseEntity.ok().build();
     }

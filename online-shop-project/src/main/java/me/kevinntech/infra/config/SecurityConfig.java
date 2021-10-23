@@ -42,6 +42,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.rememberMe()
                 .userDetailsService(userService)
                 .tokenRepository(tokenRepository());
+
+        // 특정 URL에 대해서만 CSRF 비활성화
+        //http.csrf().ignoringAntMatchers("/api/v1/**");
     }
 
     @Override

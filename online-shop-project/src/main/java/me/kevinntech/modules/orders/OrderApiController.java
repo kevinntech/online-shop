@@ -1,6 +1,7 @@
 package me.kevinntech.modules.orders;
 
 import lombok.RequiredArgsConstructor;
+import me.kevinntech.modules.main.exception.NotValidArgumentException;
 import me.kevinntech.modules.orders.dto.OrderSaveRequestDto;
 import me.kevinntech.modules.users.CurrentUser;
 import me.kevinntech.modules.users.domain.User;
@@ -20,9 +21,8 @@ public class OrderApiController {
 
     @PostMapping("/api/v1/orders")
     public ResponseEntity save(@CurrentUser User user, @Valid @RequestBody OrderSaveRequestDto requestDto, Errors errors){
-        if (errors.hasErrors()) {
-            return ResponseEntity.badRequest().build();
-        }
+        if (errors.hasErrors())
+            throw new NotValidArgumentException();
 
         // 주문 등록 처리
         orderService.saveNewOrder(user, requestDto);

@@ -1,6 +1,9 @@
 package me.kevinntech.modules.products;
 
 import lombok.RequiredArgsConstructor;
+import me.kevinntech.modules.main.exception.DataNotFoundException;
+import me.kevinntech.modules.main.exception.DuplicateDataException;
+import me.kevinntech.modules.main.exception.NotValidArgumentException;
 import me.kevinntech.modules.products.dto.ProductSaveRequestDto;
 import me.kevinntech.modules.products.dto.ProductUpdateRequestDto;
 import me.kevinntech.modules.products.validator.ProductSaveValidator;
@@ -34,9 +37,8 @@ public class ProductApiController {
     * */
     @PostMapping("/api/v1/products")
     public ResponseEntity save(@Valid @RequestBody ProductSaveRequestDto requestDto, Errors errors){
-        if (errors.hasErrors()) {
-            return ResponseEntity.badRequest().build();
-        }
+        if (errors.hasErrors())
+            throw new NotValidArgumentException();
 
         // 상품 등록 처리
         Long savedId = productService.saveNewProduct(requestDto);
@@ -50,11 +52,10 @@ public class ProductApiController {
     @PostMapping("/api/v1/products/validate")
     public ResponseEntity validate(@RequestBody Map<String, Object> param){
         String code = (String) param.get("code");
-        boolean isDuplicate = productService.isDuplicate(code);
+        boolean isDuplicated = productService.isDuplicate(code);
 
-        if (isDuplicate) {
-            return ResponseEntity.badRequest().build();
-        }
+        if (isDuplicated)
+            throw new DuplicateDataException();
 
         return ResponseEntity.ok().build();
     }
@@ -64,9 +65,8 @@ public class ProductApiController {
     * */
     @PutMapping("/api/v1/products/{productId}")
     public ResponseEntity update(@PathVariable Long productId, @Valid @RequestBody ProductUpdateRequestDto requestDto, Errors errors){
-        if (errors.hasErrors()) {
-            return ResponseEntity.badRequest().build();
-        }
+        if (errors.hasErrors())
+            throw new NotValidArgumentException();
 
         // 상품 수정 처리
         productService.updateProduct(productId, requestDto);
@@ -82,9 +82,8 @@ public class ProductApiController {
         // 상품 삭제 처리
         Product deletedProduct = productService.deleteProduct(productId);
 
-        if (deletedProduct == null) {
-            return ResponseEntity.badRequest().build();
-        }
+        if (deletedProduct == null)
+            throw new DataNotFoundException();
 
         return ResponseEntity.ok().build();
     }
