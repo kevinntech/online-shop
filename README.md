@@ -130,4 +130,109 @@
   
     * `implementation 'org.springframework.boot:spring-boot-starter-validation'`
   
+* HTTP API 에러 발생 시 처리하는 방식을 개선하기
+
+  * 기존 코드
   
+    * 기존에는 에러가 발생하면 컨트롤러에서 각 상황에 맞게 바로 응답하도록 작성하였습니다.
+  
+      ```java
+      @RestController
+      @RequiredArgsConstructor
+      public class OrderApiController {
+      
+          private final OrderService orderService;
+      
+          @PostMapping("/api/v1/orders")
+          public ResponseEntity save(@CurrentUser User user, @Valid @RequestBody OrderSaveRequestDto requestDto, Errors errors){
+              // 에러 발생 시, 각 상황에 맞게 바로 응답
+              if (errors.hasErrors()) {
+                  return ResponseEntity.badRequest().build();
+              }
+              
+              orderService.saveNewOrder(user, requestDto);
+      
+              return ResponseEntity.ok().build();
+          }
+      
+      }
+      ```
+      
+    * 하지만 에러 발생 시 처리하는 코드가 여러 컨트롤러에서 중복되기 때문에 변경 사항이 발생하면 여러 곳에서 코드 변경이 이루어져야 하는 문제점이 있다고 생각됩니다.
+  
+    * 따라서 하나의 전역 컨트롤러(`@RestControllerAdvice`)에서 에러를 처리 하도록 개선하였습니다.
+
+  * 개선된 코드
+  
+    * ① 컨트롤러에서는 에러가 발생하면 각 에러 상황에 맞는 예외를 발생 시키도록 변경하였습니다.
+  
+      ```java
+      @RestController
+      @RequiredArgsConstructor
+      public class OrderApiController {
+      
+          private final OrderService orderService;
+      
+          @PostMapping("/api/v1/orders")
+          public ResponseEntity save(@CurrentUser User user, @Valid @RequestBody OrderSaveRequestDto requestDto, Errors errors){
+              // 에러 발생 시, 각 에러에 맞는 예외를 발생시키도록 변경
+              if (errors.hasErrors())
+                  throw new NotValidArgumentException();
+              
+              orderService.saveNewOrder(user, requestDto);
+      
+              return ResponseEntity.ok().build();
+          }
+      
+      }
+      ```
+
+    * ② `ApiExceptionHandler`는 각 컨트롤러에서 발생한 예외를 처리하는 역할을 하는 전역 컨트롤러이며 클라이언트에게 상태 코드와 `ApiErrorResponse`를 JSON 형태로 제공합니다.
+    
+      ```java
+      @RestControllerAdvice
+      public class ApiExceptionHandler {
+      
+          @ExceptionHandler(NotValidArgumentException.class)
+          public ResponseEntity<ApiErrorResponse> handleNotValidArgument(NotValidArgumentException ex) {
+              ApiErrorResponse response = new ApiErrorResponse("error-00001", "전달받은 데이터가 유효하지 않습니다.");
+      
+              return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+          }
+      
+          @ExceptionHandler(DataNotFoundException.class)
+          public ResponseEntity<ApiErrorResponse> handleDataNotFound(DataNotFoundException ex) {
+              ApiErrorResponse response = new ApiErrorResponse("error-00002", "존재하지 않는 데이터입니다.");
+      
+              return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+          }
+      
+          @ExceptionHandler(DuplicateDataException.class)
+          public ResponseEntity<ApiErrorResponse> handleDuplicateData(DuplicateDataException ex) {
+              ApiErrorResponse response = new ApiErrorResponse("error-00003", "중복된 데이터입니다.");
+      
+              return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+          }
+      
+      }
+      ```
+
+    * ③ `ApiErrorResponse`는 클라이언트에게 에러에 대한 추가적인 정보를 제공하기 위해 작성되었습니다.
+
+      ```java
+      @Data
+      @AllArgsConstructor
+      public class ApiErrorResponse {
+      
+          // 에러에 대한 고유 식별자
+          private String code;
+      
+          // 에러에 대해 사람이 읽을 수 있는 간단한 메세지
+          private String message;
+      
+      }
+      ```
+  
+  * 참고 자료
+
+    * https://www.baeldung.com/rest-api-error-handling-best-practices
