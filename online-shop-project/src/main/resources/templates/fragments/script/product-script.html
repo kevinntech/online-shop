@@ -39,8 +39,11 @@
                 _this.update();
             });
 
-            $('#btn-delete').on('click', function () {
-                _this.delete();
+            $('.btn-delete').on('click', function () {
+                /* 삭제 버튼을 의미 */
+                var button = $(this);
+
+                _this.delete(button);
             });
 
             $('#btn-validation').on('click', function () {
@@ -116,16 +119,20 @@
             }).fail(function (error) {
                 alert('상품 수정에 실패했습니다.');
                 //window.location.href = '/products/update';
-                //alert(JSON.stringify(error));
+                alert(JSON.stringify(error));
             });
         },
-        delete : function () {
-            var id = $('#id').text(); // 값이 존재하는 대상이 테이블이므로 val()이 아닌 text()를 사용해야 한다.
+        delete : function (button) {
+            var tr = button.parent().parent();  // 삭제 버튼의 부모는 <td> 이며 <td>의 부모는 <tr>이다.
+            var td = tr.children();
+
+            // 삭제 버튼 클릭 시 해당 행의 값을 가져온다.
+            var id = td.eq(0).text();   // 값이 존재하는 대상이 테이블이므로 val()이 아닌 text()를 사용해야 한다.
 
             $.ajax({
                 type: 'DELETE',
                 url: '/api/v1/products/' + id,
-                contentType:'application/json; charset=utf-8',
+                contentType:'application/json; charset=utf-8'
             }).done(function() {
                 alert('상품 삭제를 완료하였습니다.');
                 window.location.href = '/products/list';

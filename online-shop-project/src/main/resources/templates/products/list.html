@@ -31,7 +31,7 @@
                                 <td id="price" th:text="${#numbers.formatInteger(product.price, 3, 'COMMA')}"></td>
                                 <td>
                                     <a th:href="@{/products/{id}/edit (id=${product.id})}" class="btn btn-success my-1">수정</a>
-                                    <button type="submit" id="btn-delete" class="btn btn-danger">삭제</button>
+                                    <button type="submit" id="btn-delete" class="btn-delete btn btn-danger">삭제</button>
                                 </td>
                             </tr>
                         </tbody>
