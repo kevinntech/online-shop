@@ -2,8 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <!-- CROPPER 스크립트 -->
-<script th:fragment="cropper-min-js" src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.min.js" integrity="sha512-FHa4dxvEkSR0LOFH/iFH0iSqlYHf/iTwLc5Ws/1Su1W90X0qnxFxciJimoue/zyOA/+Qz/XQmmKqjbubAAzpkA==" crossorigin="anonymous"></script>
-<script th:fragment="jquery-cropper-js" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cropper/1.0.1/jquery-cropper.min.js" integrity="sha512-V8cSoC5qfk40d43a+VhrTEPf8G9dfWlEJgvLSiq2T2BmgGRmZzB8dGe7XAABQrWj3sEfrR5xjYICTY4eJr76QQ==" crossorigin="anonymous"></script>
+<script src="/node_modules/cropper/dist/cropper.min.js" th:fragment="cropper-min-js"></script>
+<script src="/node_modules/jquery-cropper/dist/jquery-cropper.min.js" th:fragment="jquery-cropper-js"></script>
 <script type="application/javascript" th:fragment="cropper-script">
   $(function() {
     cropper = '';

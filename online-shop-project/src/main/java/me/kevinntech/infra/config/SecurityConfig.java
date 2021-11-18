@@ -50,7 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring()
-                .mvcMatchers("/frontend/**", "/images/**")
+                .mvcMatchers("/node_modules/**", "/images/**")
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
 
         web.ignoring().antMatchers("/favicon.ico", "/resources/**", "/error");

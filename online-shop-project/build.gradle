@@ -2,6 +2,7 @@ plugins {
     id 'org.springframework.boot' version '2.5.5'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
+    id "com.github.node-gradle.node" version "3.1.0"
 }
 
 group = 'me.kevinntech'
@@ -16,6 +17,7 @@ configurations {
 
 repositories {
     mavenCentral()
+    gradlePluginPortal()
 }
 
 dependencies {
@@ -27,15 +29,33 @@ dependencies {
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
     implementation 'org.projectlombok:lombok:1.18.20'
     compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'org.postgresql:postgresql'
-    annotationProcessor 'org.projectlombok:lombok'
+    implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.6'
+    implementation 'com.github.node-gradle:gradle-node-plugin:3.1.0'
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
-    implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.6'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.projectlombok:lombok'
 }
 
 test {
     useJUnitPlatform()
+}
+
+// task 등록
+tasks.register("npm-install") {
+    group = "application"
+    description = "Installs dependencies from package.json"
+    tasks.appNpmInstall.exec();
+}
+
+// npm install task
+task appNpmInstall(type: NpmTask) {
+    description = "Installs dependencies from package.json"
+    workingDir = file("/src/main/resources/static")
+    args = ["install"]
 }
