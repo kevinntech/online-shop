@@ -38,14 +38,14 @@
 
     * `PostgreSQL`
 
+    * `Thymeleaf`
+  
 * **[Front-end]**
 
     * `Bootstrap 4`
 
     * `JQuery`
-
-    * `Thymeleaf`
-
+  
 #### 3) 실행 방법
 
 * ① Repository를 git clone을 해서 로컬 환경에 다운로드 받습니다.
