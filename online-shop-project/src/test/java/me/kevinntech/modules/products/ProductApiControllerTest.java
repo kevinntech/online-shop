@@ -136,7 +136,7 @@ class ProductApiControllerTest {
         this.mockMvc.perform(delete("/api/v1/products/" + -1)
                     .with(csrf()))
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
 }
