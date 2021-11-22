@@ -1,6 +1,7 @@
 package me.kevinntech.modules.products;
 
 import lombok.RequiredArgsConstructor;
+import me.kevinntech.modules.main.ErrorCode;
 import me.kevinntech.modules.main.exception.DataNotFoundException;
 import me.kevinntech.modules.main.exception.DuplicateDataException;
 import me.kevinntech.modules.main.exception.NotValidArgumentException;
@@ -36,10 +37,7 @@ public class ProductApiController {
     * 상품 등록
     * */
     @PostMapping("/api/v1/products")
-    public ResponseEntity save(@Valid @RequestBody ProductSaveRequestDto requestDto, Errors errors){
-        if (errors.hasErrors())
-            throw new NotValidArgumentException();
-
+    public ResponseEntity save(@Valid @RequestBody ProductSaveRequestDto requestDto){
         // 상품 등록 처리
         Long savedId = productService.saveNewProduct(requestDto);
 
@@ -55,7 +53,7 @@ public class ProductApiController {
         boolean isDuplicated = productService.isDuplicate(code);
 
         if (isDuplicated)
-            throw new DuplicateDataException();
+            throw new DuplicateDataException(ErrorCode.DUPLICATION.getMessage());
 
         return ResponseEntity.ok().build();
     }
@@ -64,10 +62,7 @@ public class ProductApiController {
     * 상품 수정
     * */
     @PutMapping("/api/v1/products/{productId}")
-    public ResponseEntity update(@PathVariable Long productId, @Valid @RequestBody ProductUpdateRequestDto requestDto, Errors errors){
-        if (errors.hasErrors())
-            throw new NotValidArgumentException();
-
+    public ResponseEntity update(@PathVariable Long productId, @Valid @RequestBody ProductUpdateRequestDto requestDto){
         // 상품 수정 처리
         productService.updateProduct(productId, requestDto);
 
@@ -83,7 +78,7 @@ public class ProductApiController {
         Product deletedProduct = productService.deleteProduct(productId);
 
         if (deletedProduct == null)
-            throw new DataNotFoundException();
+            throw new DataNotFoundException(ErrorCode.NOT_FOUND_VALUE.getMessage());
 
         return ResponseEntity.ok().build();
     }

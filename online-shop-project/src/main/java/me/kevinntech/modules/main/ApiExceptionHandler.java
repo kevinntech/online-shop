@@ -1,35 +1,49 @@
 package me.kevinntech.modules.main;
 
+import lombok.extern.slf4j.Slf4j;
 import me.kevinntech.modules.main.exception.DataNotFoundException;
 import me.kevinntech.modules.main.exception.DuplicateDataException;
 import me.kevinntech.modules.main.exception.NotValidArgumentException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
+@Slf4j
 public class ApiExceptionHandler {
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ApiErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        log.error("handleMethodArgumentNotValidException", ex);
+        ApiErrorResponse response = ApiErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE, ex.getBindingResult());
+
+        return new ResponseEntity<>(response, HttpStatus.valueOf(ErrorCode.INVALID_INPUT_VALUE.getStatus()));
+    }
 
     @ExceptionHandler(NotValidArgumentException.class)
     public ResponseEntity<ApiErrorResponse> handleNotValidArgument(NotValidArgumentException ex) {
-        ApiErrorResponse response = new ApiErrorResponse("error-00001", "전달받은 데이터가 유효하지 않습니다.");
+        log.error("handleNotValidArgument", ex);
+        ApiErrorResponse response = ApiErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE);
 
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, HttpStatus.valueOf(ErrorCode.INVALID_INPUT_VALUE.getStatus()));
     }
 
     @ExceptionHandler(DataNotFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleDataNotFound(DataNotFoundException ex) {
-        ApiErrorResponse response = new ApiErrorResponse("error-00002", "존재하지 않는 데이터입니다.");
+        log.error("DataNotFoundException", ex);
+        ApiErrorResponse response = ApiErrorResponse.of(ErrorCode.NOT_FOUND_VALUE);
 
-        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(response, HttpStatus.valueOf(ErrorCode.NOT_FOUND_VALUE.getStatus()));
     }
 
     @ExceptionHandler(DuplicateDataException.class)
     public ResponseEntity<ApiErrorResponse> handleDuplicateData(DuplicateDataException ex) {
-        ApiErrorResponse response = new ApiErrorResponse("error-00003", "중복된 데이터입니다.");
+        log.error("DuplicateDataException", ex);
+        ApiErrorResponse response = ApiErrorResponse.of(ErrorCode.DUPLICATION);
 
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, HttpStatus.valueOf(ErrorCode.DUPLICATION.getStatus()));
     }
 
 }

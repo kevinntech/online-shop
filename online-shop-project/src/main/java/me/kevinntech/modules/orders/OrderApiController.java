@@ -20,10 +20,7 @@ public class OrderApiController {
     private final OrderService orderService;
 
     @PostMapping("/api/v1/orders")
-    public ResponseEntity save(@CurrentUser User user, @Valid @RequestBody OrderSaveRequestDto requestDto, Errors errors){
-        if (errors.hasErrors())
-            throw new NotValidArgumentException();
-
+    public ResponseEntity save(@CurrentUser User user, @Valid @RequestBody OrderSaveRequestDto requestDto){
         // 주문 등록 처리
         orderService.saveNewOrder(user, requestDto);
 

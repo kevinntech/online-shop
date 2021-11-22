@@ -1,6 +1,7 @@
 package me.kevinntech.modules.cart;
 
 import lombok.RequiredArgsConstructor;
+import me.kevinntech.modules.main.ErrorCode;
 import me.kevinntech.modules.main.exception.DataNotFoundException;
 import me.kevinntech.modules.main.exception.NotValidArgumentException;
 import me.kevinntech.modules.products.Product;
@@ -30,10 +31,10 @@ public class CartApiController {
         Product product = productService.findById(productId);
 
         if (quantity == 0)
-            throw new NotValidArgumentException();
+            throw new NotValidArgumentException(ErrorCode.INVALID_INPUT_VALUE.getMessage());
 
         if (product == null)
-            throw new DataNotFoundException();
+            throw new DataNotFoundException(ErrorCode.NOT_FOUND_VALUE.getMessage());
 
         CartProduct cartProduct = new CartProduct(product, quantity);
         cart.addCartProduct(cartProduct);
@@ -58,7 +59,7 @@ public class CartApiController {
         }
 
         if (isRemoved == false)
-            throw new DataNotFoundException();
+            throw new DataNotFoundException(ErrorCode.NOT_FOUND_VALUE.getMessage());
 
         return ResponseEntity.ok().build();
     }

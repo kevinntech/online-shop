@@ -1,6 +1,7 @@
 package me.kevinntech.modules.users.controller;
 
 import lombok.RequiredArgsConstructor;
+import me.kevinntech.modules.main.ErrorCode;
 import me.kevinntech.modules.main.exception.DuplicateDataException;
 import me.kevinntech.modules.main.exception.NotValidArgumentException;
 import me.kevinntech.modules.users.domain.User;
@@ -36,10 +37,7 @@ public class UserApiController {
     }
 
     @PostMapping("/api/v1/users")
-    public ResponseEntity saveNewUser(@Valid @RequestBody UserSaveRequestDto requestDto, Errors errors){
-        if (errors.hasErrors())
-            throw new NotValidArgumentException();
-
+    public ResponseEntity saveNewUser(@Valid @RequestBody UserSaveRequestDto requestDto){
         // 회원 가입 처리
         User user = userService.saveNewUser(requestDto);
         userService.login(user);
@@ -56,7 +54,7 @@ public class UserApiController {
         boolean isDuplicatedNickname = userService.isDuplicateNickname(nickname);
 
         if (isDuplicatedNickname)
-            throw new DuplicateDataException();
+            throw new DuplicateDataException(ErrorCode.DUPLICATION.getMessage());
 
         return ResponseEntity.ok().build();
     }
@@ -70,7 +68,7 @@ public class UserApiController {
         boolean isDuplicatedEmail = userService.isDuplicateEmail(email);
 
         if (isDuplicatedEmail)
-            throw new DuplicateDataException();
+            throw new DuplicateDataException(ErrorCode.DUPLICATION.getMessage());
 
         return ResponseEntity.ok().build();
     }
