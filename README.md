@@ -164,7 +164,7 @@
 
   * 개선된 코드
   
-    * ① 컨트롤러에서는 에러가 발생하면 각 에러 상황에 맞는 예외를 발생 시키도록 변경하였습니다.
+    * ① 컨트롤러에서 바인딩 에러 또는 각 상황에 맞는 예외가 발생한다고 가정합니다.
   
       ```java
       @RestController
@@ -174,11 +174,8 @@
           private final OrderService orderService;
       
           @PostMapping("/api/v1/orders")
-          public ResponseEntity save(@CurrentUser User user, @Valid @RequestBody OrderSaveRequestDto requestDto, Errors errors){
-              // 에러 발생 시, 각 에러에 맞는 예외를 발생시키도록 변경
-              if (errors.hasErrors())
-                  throw new NotValidArgumentException();
-              
+          public ResponseEntity save(@CurrentUser User user, @Valid @RequestBody OrderSaveRequestDto requestDto){
+              // 주문 등록 처리
               orderService.saveNewOrder(user, requestDto);
       
               return ResponseEntity.ok().build();
@@ -191,27 +188,39 @@
     
       ```java
       @RestControllerAdvice
+      @Slf4j
       public class ApiExceptionHandler {
+      
+          @ExceptionHandler(MethodArgumentNotValidException.class)
+          public ResponseEntity<ApiErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+              log.error("handleMethodArgumentNotValidException", ex);
+              ApiErrorResponse response = ApiErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE, ex.getBindingResult());
+      
+              return new ResponseEntity<>(response, HttpStatus.valueOf(ErrorCode.INVALID_INPUT_VALUE.getStatus()));
+          }
       
           @ExceptionHandler(NotValidArgumentException.class)
           public ResponseEntity<ApiErrorResponse> handleNotValidArgument(NotValidArgumentException ex) {
-              ApiErrorResponse response = new ApiErrorResponse("error-00001", "전달받은 데이터가 유효하지 않습니다.");
+              log.error("handleNotValidArgument", ex);
+              ApiErrorResponse response = ApiErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE);
       
-              return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+              return new ResponseEntity<>(response, HttpStatus.valueOf(ErrorCode.INVALID_INPUT_VALUE.getStatus()));
           }
       
           @ExceptionHandler(DataNotFoundException.class)
           public ResponseEntity<ApiErrorResponse> handleDataNotFound(DataNotFoundException ex) {
-              ApiErrorResponse response = new ApiErrorResponse("error-00002", "존재하지 않는 데이터입니다.");
+              log.error("DataNotFoundException", ex);
+              ApiErrorResponse response = ApiErrorResponse.of(ErrorCode.NOT_FOUND_VALUE);
       
-              return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+              return new ResponseEntity<>(response, HttpStatus.valueOf(ErrorCode.NOT_FOUND_VALUE.getStatus()));
           }
       
           @ExceptionHandler(DuplicateDataException.class)
           public ResponseEntity<ApiErrorResponse> handleDuplicateData(DuplicateDataException ex) {
-              ApiErrorResponse response = new ApiErrorResponse("error-00003", "중복된 데이터입니다.");
+              log.error("DuplicateDataException", ex);
+              ApiErrorResponse response = ApiErrorResponse.of(ErrorCode.DUPLICATION);
       
-              return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+              return new ResponseEntity<>(response, HttpStatus.valueOf(ErrorCode.DUPLICATION.getStatus()));
           }
       
       }
@@ -220,15 +229,86 @@
     * ③ `ApiErrorResponse`는 클라이언트에게 에러에 대한 추가적인 정보를 제공하기 위해 작성되었습니다.
 
       ```java
-      @Data
-      @AllArgsConstructor
+      @Getter
+      @NoArgsConstructor(access = AccessLevel.PROTECTED)
       public class ApiErrorResponse {
       
-          // 에러에 대한 고유 식별자
-          private String code;
+          private int status;
       
-          // 에러에 대해 사람이 읽을 수 있는 간단한 메세지
-          private String message;
+          private String code; // 에러에 대한 고유 식별자
+      
+          private String message; // 에러에 대해 사람이 읽을 수 있는 간단한 메세지
+      
+          private List<FieldError> errors;
+      
+          private LocalDateTime timestamp;
+      
+          private ApiErrorResponse(ErrorCode code) {
+              this.status = code.getStatus();
+              this.code = code.getCode();
+              this.message = code.getMessage();
+              this.errors = new ArrayList<>();
+              this.code = code.getCode();
+              this.timestamp = LocalDateTime.now();
+          }
+      
+          private ApiErrorResponse(ErrorCode code, List<FieldError> errors) {
+              this.status = code.getStatus();
+              this.code = code.getCode();
+              this.message = code.getMessage();
+              this.errors = errors;
+              this.code = code.getCode();
+              this.timestamp = LocalDateTime.now();
+          }
+      
+          public static ApiErrorResponse of(ErrorCode code) {
+              return new ApiErrorResponse(code);
+          }
+      
+          public static ApiErrorResponse of(ErrorCode code, BindingResult bindingResult) {
+              return new ApiErrorResponse(code, FieldError.of(bindingResult));
+          }
+      
+          @Getter
+          @NoArgsConstructor(access = AccessLevel.PROTECTED)
+          public static class FieldError {
+              private String field;
+              private String value;
+              private String reason;
+      
+              private FieldError(String field, String value, String reason) {
+                  this.field = field;
+                  this.value = value;
+                  this.reason = reason;
+              }
+      
+              private static List<FieldError> of(final BindingResult bindingResult) {
+                  return bindingResult.getFieldErrors()
+                          .stream()
+                          .map(error -> new FieldError(
+                                          error.getField(),
+                                          error.getRejectedValue() == null ? "" : error.getRejectedValue().toString(),
+                                          error.getDefaultMessage()))
+                          .collect(Collectors.toList());
+              }
+          }
+      }
+      ```
+
+    * ④ `ErrorCode`는 에러 코드를 한 곳에서 관리하도록 enum 타입으로 선언하였습니다.
+
+      ```java
+      @Getter
+      @RequiredArgsConstructor
+      public enum ErrorCode {
+      
+          INVALID_INPUT_VALUE(400, "ERROR-001", "Invalid Input Value"),
+          NOT_FOUND_VALUE(404, "ERROR-002", "Data Not Found"),
+          DUPLICATION(400, "ERROR-003", "Data is Duplication");
+      
+          private final int status;
+          private final String code;
+          private final String message;
       
       }
       ```
