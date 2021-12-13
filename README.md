@@ -106,30 +106,8 @@
 
   * `Warehousing` : 상품 공급(입고)
 
-#### 6) 에러 발생 및 해결방법
+#### 6) 문제 발생 및 해결 방법
 
-* Gradle 빌드 시, LOMBOK 관련 에러 : `variable userService not initialized in the default constructor`
-
-  * Gradle 5에서는 애노테이션 프로세서를 별도로 나열해야 합니다.
-
-    ```
-    dependencies {
-        compileOnly 'org.projectlombok:lombok:1.18.20'
-        annotationProcessor 'org.projectlombok:lombok:1.18.20'
-        
-        testCompileOnly 'org.projectlombok:lombok:1.18.20'
-        testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
-    }
-    ```
-
-    * [참고] https://stackoverflow.com/questions/54768504/upgrading-from-java-10-to-java-11-and-gradle-4-10-to-gradle-5-2-variable-not
-
-* `@Valid` 애노테이션이 import 되지 않는 문제
-
-  * 스프링 부트 버전 2.3 부터 `starter-web` 의존성에 `spring-boot-starter-validation`가 제외되었으므로 별도로 의존성을 추가해야 합니다.
-  
-    * `implementation 'org.springframework.boot:spring-boot-starter-validation'`
-  
 * HTTP API 에러 발생 시 처리하는 방식을 개선하기
 
   * 기존 코드
@@ -316,3 +294,51 @@
   * 참고 자료
 
     * https://www.baeldung.com/rest-api-error-handling-best-practices
+
+* Jenkins를 이용한 CI/CD 환경 구축
+
+  * 개선하기 전 상황
+    
+    * 기존에는 제가 직접 원격 서버에 SSH로 접속해서 GitHub으로 부터 Pull을 받은 다음에 빌드를 하고 기존에 구동 중인 스프링 부트 애플리케이션을 종료한 다음, 새롭게 빌드된 애플리케이션을 실행하는 방식이었기 때문에 번거로운 부분이 있었습니다.
+  
+    * 하지만 이제 개발자가 변경된 소스코드를 GitHub으로 Push를 하면 Webhook를 통해서 Push 이벤트가 발생했다는 것을 개발 PC(로컬 환경)에서 구동 중인 젠킨스에게 알려주고 젠킨스는 Build와 Test를 진행한 다음, 변경된 Jar 파일을 원격 서버에 배포하고 실행까지 하도록 개선하였습니다.  
+
+  * 개선된 구조
+
+    ![image 4](images/img4.png)
+
+    * ① GitHub에 소스코드를 Push 한다.
+    
+    * ② GitHub의 Webhook을 이용해서 Jenkins에게 알린다.
+    
+    * ③ Jenkins가 GitHub으로 부터 변경된 소스코드를 가져와서 Build와 Test를 한다.
+    
+    * ④ Jenkins 플러그인(Publish Over SSH)을이용해서 배포 서버에 Build한 파일을 전송한다. 그리고 실행할 명령도 함께 전송한다.
+    
+    * ⑤ 기존에 구동 중인 스프링 부트 애플리케이션을 종료한다.
+    
+    * ⑥ 새롭게 빌드된 Jar 파일을 실행한다.
+
+* 에러 발생에 대한 해결 방법
+
+  * Gradle 빌드 시, LOMBOK 관련 에러 : `variable userService not initialized in the default constructor`
+
+    * Gradle 5에서는 애노테이션 프로세서를 별도로 나열해야 합니다.
+
+      ```
+      dependencies {
+          compileOnly 'org.projectlombok:lombok:1.18.20'
+          annotationProcessor 'org.projectlombok:lombok:1.18.20'
+          
+          testCompileOnly 'org.projectlombok:lombok:1.18.20'
+          testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
+      }
+      ```
+
+      * [참고] https://stackoverflow.com/questions/54768504/upgrading-from-java-10-to-java-11-and-gradle-4-10-to-gradle-5-2-variable-not
+
+  * `@Valid` 애노테이션이 import 되지 않는 문제
+
+    * 스프링 부트 버전 2.3 부터 `starter-web` 의존성에 `spring-boot-starter-validation`가 제외되었으므로 별도로 의존성을 추가해야 합니다.
+
+      * `implementation 'org.springframework.boot:spring-boot-starter-validation'`
