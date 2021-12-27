@@ -1,6 +1,7 @@
 package me.kevinntech.modules.stock;
 
 import lombok.*;
+import me.kevinntech.modules.main.BaseEntity;
 import me.kevinntech.modules.orders.OrderProduct;
 import me.kevinntech.modules.products.Product;
 import me.kevinntech.modules.warehousing.Warehousing;
@@ -14,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class Stock {
+public class Stock extends BaseEntity {
 
     @Id @GeneratedValue
     @Column(name = "stock_id")

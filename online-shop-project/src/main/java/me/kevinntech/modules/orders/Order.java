@@ -1,6 +1,7 @@
 package me.kevinntech.modules.orders;
 
 import lombok.*;
+import me.kevinntech.modules.main.BaseEntity;
 import me.kevinntech.modules.orders.dto.OrderSaveRequestDto;
 import me.kevinntech.modules.orders.enums.DeliveryStatus;
 import me.kevinntech.modules.orders.enums.OrderStatus;
@@ -18,7 +19,7 @@ import static javax.persistence.FetchType.LAZY;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class Order {
+public class Order extends BaseEntity {
 
     @Id @GeneratedValue
     @Column(name = "order_id")

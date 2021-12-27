@@ -3,6 +3,7 @@ package me.kevinntech.modules.products;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.kevinntech.infra.MockMvcTest;
 import me.kevinntech.modules.products.dto.ProductSaveRequestDto;
+import me.kevinntech.modules.users.WithUser;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ class ProductApiControllerTest {
     @Autowired ProductRepository productRepository;
 
     @Test
+    @WithUser("kevin")
     @DisplayName("상품 등록 - 완료")
     public void createProduct_success() throws Exception {
         ProductSaveRequestDto requestDto = new ProductSaveRequestDto();
@@ -45,6 +47,7 @@ class ProductApiControllerTest {
     }
 
     @Test
+    @WithUser("kevin")
     @DisplayName("상품 등록 - 실패")
     public void createProduct_fail() throws Exception {
         ProductSaveRequestDto requestDto = new ProductSaveRequestDto();
@@ -66,6 +69,7 @@ class ProductApiControllerTest {
     }
 
     @Test
+    @WithUser("kevin")
     @DisplayName("상품 수정 - 완료")
     public void updateProduct_success() throws Exception {
         Product product = productFactory.createProduct();
@@ -94,6 +98,7 @@ class ProductApiControllerTest {
     }
 
     @Test
+    @WithUser("kevin")
     @DisplayName("상품 수정 - 실패")
     public void updateProduct_fail() throws Exception {
         Product product = productFactory.createProduct();
@@ -116,6 +121,7 @@ class ProductApiControllerTest {
     }
 
     @Test
+    @WithUser("kevin")
     @DisplayName("상품 삭제 - 완료")
     public void deleteProduct_success() throws Exception {
         Product product = productFactory.createProduct();
@@ -131,6 +137,7 @@ class ProductApiControllerTest {
     }
 
     @Test
+    @WithUser("kevin")
     @DisplayName("상품 삭제 - 실패")
     public void deleteProduct_fail() throws Exception {
         this.mockMvc.perform(delete("/api/v1/products/" + -1)

@@ -5,6 +5,7 @@ import me.kevinntech.infra.MockMvcTest;
 import me.kevinntech.modules.products.Product;
 import me.kevinntech.modules.products.ProductFactory;
 import me.kevinntech.modules.stock.StockRepository;
+import me.kevinntech.modules.users.WithUser;
 import me.kevinntech.modules.warehousing.dto.WarehousingSaveRequestDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,6 +29,7 @@ public class WarehousingApiControllerTest {
     @Autowired StockRepository stockRepository;
 
     @Test
+    @WithUser("kevin")
     @DisplayName("상품 입고 - 완료")
     void saveNewWarehousing_success() throws Exception {
         Product product = productFactory.createProduct();
@@ -53,6 +55,7 @@ public class WarehousingApiControllerTest {
     }
 
     @Test
+    @WithUser("kevin")
     @DisplayName("상품 입고 - 실패")
     void saveNewWarehousing_fail() throws Exception {
         Product product = productFactory.createProduct();

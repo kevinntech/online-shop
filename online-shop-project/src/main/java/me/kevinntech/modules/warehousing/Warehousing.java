@@ -1,6 +1,7 @@
 package me.kevinntech.modules.warehousing;
 
 import lombok.*;
+import me.kevinntech.modules.main.BaseEntity;
 import me.kevinntech.modules.products.Product;
 import me.kevinntech.modules.stock.Stock;
 import me.kevinntech.modules.warehousing.dto.WarehousingSaveRequestDto;
@@ -12,7 +13,7 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class Warehousing {
+public class Warehousing extends BaseEntity {
 
     @Id @GeneratedValue
     @Column(name = "warehousing_id")

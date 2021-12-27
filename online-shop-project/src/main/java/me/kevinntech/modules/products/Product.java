@@ -1,16 +1,17 @@
 package me.kevinntech.modules.products;
 
 import lombok.*;
+import me.kevinntech.modules.main.BaseEntity;
 import me.kevinntech.modules.products.dto.ProductUpdateRequestDto;
 
 import javax.persistence.*;
 
 @Entity
-@Getter @Builder
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class Product {
+public class Product extends BaseEntity {
 
     @Id @GeneratedValue
     @Column(name = "product_id")
@@ -31,6 +32,17 @@ public class Product {
 
     @Lob @Basic(fetch = FetchType.EAGER)
     private String productImage;
+
+    @Builder
+    public Product(String code, String name, String brand, long price, String description, String productImage) {
+        this.code = code;
+        this.name = name;
+        this.brand = brand;
+        this.price = price;
+        this.description = description;
+        this.productImage = productImage;
+    }
+
 
     // 엔티티 수정
     public void update(ProductUpdateRequestDto requestDto) {
