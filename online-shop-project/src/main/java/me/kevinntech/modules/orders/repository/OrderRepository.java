@@ -1,5 +1,6 @@
-package me.kevinntech.modules.orders;
+package me.kevinntech.modules.orders.repository;
 
+import me.kevinntech.modules.orders.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;

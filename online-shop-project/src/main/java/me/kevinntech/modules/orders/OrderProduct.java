@@ -1,6 +1,7 @@
 package me.kevinntech.modules.orders;
 
 import lombok.*;
+import me.kevinntech.modules.main.BaseEntity;
 import me.kevinntech.modules.products.Product;
 import me.kevinntech.modules.stock.Stock;
 
@@ -13,7 +14,7 @@ import static javax.persistence.FetchType.LAZY;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class OrderProduct {
+public class OrderProduct extends BaseEntity {
 
     @Id @GeneratedValue
     @Column(name = "order_product_id")

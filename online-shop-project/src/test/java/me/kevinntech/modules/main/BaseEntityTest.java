@@ -3,7 +3,6 @@ package me.kevinntech.modules.main;
 import me.kevinntech.modules.products.Product;
 import me.kevinntech.modules.products.ProductRepository;
 import me.kevinntech.modules.users.WithUser;
-import me.kevinntech.modules.users.dto.UserSaveRequestDto;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

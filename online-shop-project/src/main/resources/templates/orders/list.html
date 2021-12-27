@@ -4,37 +4,118 @@
 <head th:replace="fragments/layout/header :: header"></head>
 <body class="bg-light">
     <div th:replace="fragments/layout/navigation :: main-nav"></div>
-    <div class="container">
+    <div class="container-fluid">
         <div class="row mt-5 justify-content-center">
             <div class="col-2">
                 <div th:replace="fragments/layout/admin-menu :: admin-menu(currentMenu='order-list')"></div>
             </div>
             <div class="col-10">
-                <div class="table-responsive">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>주문 상품</th>
-                                <th>배송 상태</th>
-                                <th>받는 사람 이름</th>
-                                <th>주소</th>
-                                <th>전화번호</th>
-                                <th>주문 금액</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="order : ${orders}">
-                                <td id="id" th:text="${order.id}"></td>
-                                <td id="code" th:text="${order.orderedProductName}"></td>
-                                <td id="deliveryStatus" th:text="${order.deliveryStatus}"></td>
-                                <td id="deliveredName" th:text="${order.deliveredName}"></td>
-                                <td id="address" th:text="${order.address}"></td>
-                                <td id="phoneNumber" th:text="${order.phoneNumber}"></td>
-                                <td id="orderedTotalAmount" th:text="${#numbers.formatInteger(order.orderedTotalAmount, 0, 'COMMA')} + 원"></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="col-11">
+                    <div class="row mt-2">
+                        <div class="col">
+                            <h2 class="mb-3">주문 내역</h2>
+                            <!-- 검색 조건 -->
+                            <form id="searchForm" th:object="${orderSearchCond}" method="get" class="needs-validation" novalidate>
+                                <div class="row mt-5">
+                                    <div class="col-md-3  align-self-end">
+                                        <div class="row">
+                                            <div class="col-sm-5">
+                                                <label for="codeType">번호 / 코드</label>
+                                                <select id="codeType" th:field="*{codeType}" class="form-control custom-select d-block w-100" required>
+                                                    <option value="">전체</option>
+                                                    <option th:each="codeType : ${codeTypes}"
+                                                            th:value="${codeType}"
+                                                            th:text="${codeType.getValue()}">
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div class="col-sm-7 align-self-end">
+                                                <input id="searchCode" th:field="*{searchCode}" type="text" class="form-control" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="orderStatus">주문 상태</label>
+                                        <select id="orderStatus" th:field="*{orderStatus}" class="form-control custom-select d-block w-100" required>
+                                            <option value="">전체</option>
+                                            <option th:each="status : ${orderStatuses}"
+                                                    th:value="${status}"
+                                                    th:text="${status.getValue()}">
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="startDate">시작일</label>
+                                        <input th:field="*{startDate}" type="date" class="form-control" id="startDate" placeholder="" value="" required>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="endDate">종료일</label>
+                                        <input th:field="*{endDate}" type="date" class="form-control" id="endDate" placeholder="" value="" required>
+                                    </div>
+                                    <div class="col-md-2 align-self-end">
+                                        <div class="row">
+                                            <button type="button" class="btn btn-outline-danger mr-2" id="init"/>초기화</button>
+                                            <button type="submit" class="btn btn-outline-success" id="search">검색</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="table-responsive">
+                            <table class="mt-5 table table-hover border-bottom">
+                                <thead>
+                                    <tr>
+                                        <th>주문번호</th>
+                                        <th>받는 사람 이름</th>
+                                        <th>주소</th>
+                                        <th>전화번호</th>
+                                        <th>주문일자</th>
+                                        <th>주문 상태</th>
+                                        <th>상품코드</th>
+                                        <th>상품명</th>
+                                        <th>단가</th>
+                                        <th>수량</th>
+                                        <th>금액</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="order : ${orders}">
+                                        <!-- 주문번호 -->
+                                        <td th:text="${order.id}" th:if="${order.displayOrderDetailId} == 1"></td>
+                                        <td th:unless="${order.displayOrderDetailId} == 1"></td>
+                                        <!-- 받는 사람 이름 -->
+                                        <td th:text="${order.deliveredName}" th:if="${order.displayOrderDetailId} == 1"></td>
+                                        <td th:unless="${order.displayOrderDetailId} == 1"></td>
+                                        <!-- 주소 -->
+                                        <td th:text="${order.address}" th:if="${order.displayOrderDetailId} == 1"></td>
+                                        <td th:unless="${order.displayOrderDetailId} == 1"></td>
+                                        <!-- 전화번호 -->
+                                        <td th:text="${order.phoneNumber}" th:if="${order.displayOrderDetailId} == 1"></td>
+                                        <td th:unless="${order.displayOrderDetailId} == 1"></td>
+                                        <!-- 주문일자 -->
+                                        <td th:text="${#temporals.format(order.orderedAt, 'yyyy년 M월 d일')}" th:if="${order.displayOrderDetailId} == 1"></td>
+                                        <td th:unless="${order.displayOrderDetailId} == 1"></td>
+                                        <!-- 주문 상태 -->
+                                        <td th:text="${order.orderStatus.getValue()}" th:if="${order.displayOrderDetailId} == 1"></td>
+                                        <td th:unless="${order.displayOrderDetailId} == 1"></td>
+                                        <!-- 상품코드 -->
+                                        <td th:text="${order.productCode}"></td>
+                                        <!-- 상품명 -->
+                                        <td th:text="${order.productName}"></td>
+                                        <!-- 단가 -->
+                                        <td th:text="${#numbers.formatInteger(order.orderPrice, 0, 'COMMA')} + 원"></td>
+                                        <!-- 수량 -->
+                                        <td th:text="${#numbers.formatInteger(order.orderQuantity, 0, 'COMMA')} + 개"></td>
+                                        <!-- 금액 -->
+                                        <td th:text="${#numbers.formatInteger(order.orderAmount, 0, 'COMMA')} + 원"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -43,5 +124,34 @@
     <!-- Bootstrap js -->
     <script th:replace="fragments/script/main-script :: jquery-script"></script>
     <script th:replace="fragments/script/main-script :: bootstrap-script"></script>
+    <script type="text/javascript">
+         // Form 초기화
+         $(document).ready(function() {
+            // 처음 로딩 시, 검색 텍스트 필드를 읽기 전용으로 한다.
+            if ($("#codeType").val() == '') {
+                $("#searchCode").attr("readonly", true);
+                $("#searchCode").val('');
+            }
+
+            // 번호 드롭다운 리스트를 변경할 때 마다 검색 텍스트 필드의 읽기 전용 속성을 활성화 / 비활성화 한다.
+            $("#codeType").change(function(){
+                if ($(this).val() == '') {
+                    $("#searchCode").attr("readonly", true);
+                    $("#searchCode").val('');
+                } else {
+                    $("#searchCode").attr("readonly", false);
+                }
+            });
+
+            $("#init").click(function() {
+                $("#numberType").val('');
+                $("#searchCode").val('');
+                $("#orderState").val('');
+                $("#startDate").val('');
+                $("#endDate").val('');
+            });
+         });
+    </script>
+
 </body>
 </html>

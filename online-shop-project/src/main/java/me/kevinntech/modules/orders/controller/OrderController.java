@@ -1,11 +1,17 @@
-package me.kevinntech.modules.orders;
+package me.kevinntech.modules.orders.controller;
 
 import lombok.RequiredArgsConstructor;
+import me.kevinntech.modules.orders.OrderService;
+import me.kevinntech.modules.orders.dto.OrderDetailsDto;
+import me.kevinntech.modules.orders.dto.OrderSearchCond;
 import me.kevinntech.modules.orders.dto.OrderViewResponseDto;
+import me.kevinntech.modules.orders.enums.CodeType;
+import me.kevinntech.modules.orders.enums.OrderStatus;
 import me.kevinntech.modules.products.dto.ProductToOrderForm;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -49,9 +55,12 @@ public class OrderController {
     }
 
     @GetMapping("/list")
-    public String ordersList(Model model){
-        List<OrderViewResponseDto> orders = orderService.findOrders();
+    public String ordersList(@ModelAttribute("orderSearchCond") OrderSearchCond orderSearchCond, Model model){
+        List<OrderDetailsDto> orders = orderService.findOrderDetails(orderSearchCond);
+
         model.addAttribute("orders", orders);
+        model.addAttribute("orderStatuses", OrderStatus.values());
+        model.addAttribute("codeTypes", CodeType.values());
 
         return "orders/list";
     }

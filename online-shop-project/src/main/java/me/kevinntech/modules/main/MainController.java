@@ -18,8 +18,8 @@ public class MainController {
     private final ProductService productService;
 
     @GetMapping("/")
-    public String home(@CurrentUser User user, Model model){
-        if(user != null){
+    public String home(@CurrentUser User user, Model model) {
+        if (user != null) {
             model.addAttribute(user);
         }
 
