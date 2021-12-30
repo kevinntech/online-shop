@@ -31,6 +31,8 @@
     * `Spring Web`
 
     * `Spring Data JPA`
+  
+    * `Querydsl`
 
     * `Spring Security`
 
@@ -108,7 +110,7 @@
 
 #### 6) 문제 발생 및 해결 방법
 
-* HTTP API 에러 발생 시 처리하는 방식을 개선하기
+* (1) HTTP API 에러 발생 시 처리하는 방식을 개선하기
 
   * 기존 코드
   
@@ -142,7 +144,7 @@
 
   * 개선된 코드
   
-    * ① 컨트롤러에서 바인딩 에러 또는 각 상황에 맞는 예외가 발생한다고 가정합니다.
+    * ① 컨트롤러에서 바인딩 에러가 발생하거나 각 상황에 맞는 예외가 발생한다고 가정합니다.
   
       ```java
       @RestController
@@ -204,7 +206,7 @@
       }
       ```
 
-    * ③ `ApiErrorResponse`는 클라이언트에게 에러에 대한 추가적인 정보를 제공하기 위해 작성되었습니다.
+    * ③ `ApiErrorResponse`는 클라이언트에게 에러에 대한 정보를 제공하기 위해 작성되었습니다.
 
       ```java
       @Getter
@@ -294,8 +296,10 @@
   * 참고 자료
 
     * https://www.baeldung.com/rest-api-error-handling-best-practices
+  
+    * https://github.com/cheese10yun/code-design/tree/master/ch5
 
-* Jenkins를 이용한 CI/CD 환경 구축
+* (2) Jenkins를 이용한 CI/CD 환경 구축
 
   * 개선하기 전 상황
     
@@ -313,13 +317,19 @@
     
     * ③ Jenkins가 GitHub으로 부터 변경된 소스코드를 가져와서 Build와 Test를 한다.
     
-    * ④ Jenkins 플러그인(Publish Over SSH)을이용해서 배포 서버에 Build한 파일을 전송한다. 그리고 실행할 명령도 함께 전송한다.
+    * ④ Jenkins 플러그인(Publish Over SSH)을 이용해서 배포 서버에 Build한 파일을 전송한다. 그리고 실행할 명령도 함께 전송한다.
     
     * ⑤ 기존에 구동 중인 스프링 부트 애플리케이션을 종료한다.
     
     * ⑥ 새롭게 빌드된 Jar 파일을 실행한다.
 
-* 에러 발생에 대한 해결 방법
+* (3) Querydsl 도입
+
+  * 기존에는 문자열 연산으로 작성했던 정적 쿼리를 Querydsl를 도입함으로써 동적 쿼리로 개선하였습니다.
+
+    ![image 5](images/img5.png)  
+
+* (4) 에러 발생에 대한 해결 방법
 
   * Gradle 빌드 시, LOMBOK 관련 에러 : `variable userService not initialized in the default constructor`
 
