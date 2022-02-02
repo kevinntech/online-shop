@@ -66,7 +66,7 @@ tasks.register("npm-install") {
 // npm install task
 task appNpmInstall(type: NpmTask) {
     description = "Installs dependencies from package.json"
-    workingDir = file("/src/main/resources/static")
+    workingDir = file("${projectDir}/src/main/resources/static")
     args = ["install"]
 }
 
