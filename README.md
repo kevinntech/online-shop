@@ -56,7 +56,7 @@
 
 * ② 아래 디렉토리로 이동합니다.
 
-  * `cd online-shop/project`
+  * `cd online-shop`
 
 * ③ 프로젝트를 빌드합니다.
 

@@ -56,19 +56,19 @@ test {
     useJUnitPlatform()
 }
 
-// task 등록
-tasks.register("npm-install") {
-    group = "application"
-    description = "Installs dependencies from package.json"
-    tasks.appNpmInstall.exec();
+node {
+    version = '16.3.0' //자신이 사용하는 노드 버전
+    download = true
+    nodeProjectDir = file("${projectDir}/src/main/resources/static")
 }
 
-// npm install task
-task appNpmInstall(type: NpmTask) {
-    description = "Installs dependencies from package.json"
-    workingDir = file("${projectDir}/src/main/resources/static")
-    args = ["install"]
+task copyFrontLib(type: Copy) {
+    from "${projectDir}/src/main/resources/static"
+    into "${projectDir}/build/resources/main/static/."
 }
+
+copyFrontLib.dependsOn npmInstall
+compileJava.dependsOn copyFrontLib
 
 // Querydsl 설정
 def querydslDir = "$buildDir/generated/querydsl"
