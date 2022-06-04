@@ -359,7 +359,7 @@
 
     * https://www.baeldung.com/rest-api-error-handling-best-practices
 
-#### (3) Jenkins를 이용한 CI/CD 환경 구축
+#### (3) Jenkins를 이용한 배포 자동화 환경 구축
 
 * 문제 상황
 
